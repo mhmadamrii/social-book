@@ -15,6 +15,8 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
+import { Button } from "~/components/ui/button";
+import { signIn } from "next-auth/react";
 
 export function FormLogin() {
   const form = useForm<LoginValues>({
@@ -62,9 +64,10 @@ export function FormLogin() {
             </FormItem>
           )}
         />
-        <LoadingButton loading={isPending} type="submit" className="w-full">
+        {/* <LoadingButton loading={isPending} type="submit" className="w-full">
           Log in
-        </LoadingButton>
+        </LoadingButton> */}
+        <Button className="w-full" onClick={() => signIn("discord")}>Login</Button>
       </form>
     </Form>
   );
