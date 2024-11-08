@@ -5,6 +5,7 @@ import Heart from "@react-sandbox/heart";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "../ui/button";
 import { useRef, useState } from "react";
+import { api } from "~/trpc/react";
 import { Separator } from "~/components/ui/separator";
 import { Input } from "../ui/input";
 
@@ -27,6 +28,7 @@ import {
 export function PostCard({ title }: { title: any }) {
   const [isClick, setClick] = useState(false);
   const [isOpenComment, setIsOpenComment] = useState(false);
+  const [comment, setComment] = useState("");
   const commentRef = useRef<HTMLInputElement>(null);
 
   const handleDelete = () => {};

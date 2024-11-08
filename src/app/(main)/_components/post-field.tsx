@@ -9,6 +9,9 @@ import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
 import { Textarea } from "~/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { api } from "~/trpc/react";
+import { useToast } from "~/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 interface Attachment {
   file: File;
@@ -27,10 +30,37 @@ interface AttachmentPreviewProps {
 }
 
 export function PostField() {
+  const router = useRouter();
+  const utils = api.useUtils();
   const attachments = [];
+  const { toast } = useToast();
   const removeAttachment = () => {};
   const [post, setPost] = useState("");
   const [file, setFile] = useState<File | null>(null);
+
+  const { mutate, isPending } = api.post.create.useMutation({
+    onSuccess: async (res) => {
+      router.refresh();
+      setPost("");
+      toast({
+        title: "Post Created",
+        description: "lorem ipsum",
+      });
+    },
+    onError: (err) => {
+      console.log(err);
+      toast({
+        title: "Error",
+        description: "lorem ipsum",
+      });
+    },
+  });
+
+  const handleCreatePost = () => {
+    mutate({
+      content: post,
+    });
+  };
 
   return (
     <section className="mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4">
@@ -41,6 +71,7 @@ export function PostField() {
         </Avatar>
 
         <Textarea
+          disabled={isPending}
           placeholder="What's going on?"
           className="rounded-2xl bg-background"
           value={post}
@@ -49,7 +80,11 @@ export function PostField() {
       </div>
       <div className="flex w-full justify-end gap-3 rounded-xl">
         <AddAttachmentsButton disabled={false} onFilesSelected={setFile} />
-        <Button disabled={post === ""} className="bg-blue-500">
+        <Button
+          onClick={handleCreatePost}
+          disabled={post === "" || isPending}
+          className="bg-blue-500"
+        >
           Post
         </Button>
       </div>

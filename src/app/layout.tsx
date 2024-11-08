@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import { SessionWrapper } from "~/components/globals/session-wrapper";
+import { Toaster } from "~/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -31,6 +32,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <Toaster />
               {children}
             </ThemeProvider>
           </TRPCReactProvider>
