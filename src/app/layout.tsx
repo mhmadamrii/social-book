@@ -39,3 +39,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+// https://github.com/codinginflow/nextjs-15-social-media-app
