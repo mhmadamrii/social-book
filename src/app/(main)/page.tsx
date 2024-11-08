@@ -2,13 +2,58 @@ import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
 import { PostField } from "./_components/post-field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { PostCard } from "~/components/globals/post-card";
 
 export default async function Home() {
   const session = await auth();
-  console.log("session", session);
   if (!session) {
     redirect("/login");
   }
+
+  const posts = [
+    {
+      id: 1,
+      title: "Hello world for you",
+      likes: 0,
+      comments: 0,
+      bookmarks: 0,
+      createdAt: new Date(),
+      user: {
+        id: 1,
+        name: "John Doe",
+        avatar: "https://github.com/shadcn.png",
+        username: "shadcn",
+      },
+    },
+    {
+      id: 2,
+      title: "Hello world for you",
+      likes: 0,
+      comments: 0,
+      bookmarks: 0,
+      createdAt: new Date(),
+      user: {
+        id: 1,
+        name: "John Doe",
+        avatar: "https://github.com/shadcn.png",
+        username: "shadcn",
+      },
+    },
+    {
+      id: 3,
+      title: "Hello world for you",
+      likes: 0,
+      comments: 0,
+      bookmarks: 0,
+      createdAt: new Date(),
+      user: {
+        id: 1,
+        name: "John Doe",
+        avatar: "https://github.com/shadcn.png",
+        username: "shadcn",
+      },
+    },
+  ];
 
   return (
     <div className="w-full space-y-5">
@@ -20,8 +65,10 @@ export default async function Home() {
             <TabsTrigger value="following">Following</TabsTrigger>
           </TabsList>
           <TabsContent value="for-you">
-            <div className="w-full">
-              <h1>Hello world for you</h1>
+            <div className="flex flex-col gap-4">
+              {posts?.map((item) => (
+                <PostCard key={item.id} title={item.title} />
+              ))}
             </div>
           </TabsContent>
           <TabsContent value="following">
@@ -31,12 +78,6 @@ export default async function Home() {
           </TabsContent>
         </Tabs>
       </div>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro eum
-        adipisci distinctio blanditiis est delectus dolorum saepe quisquam,
-        dolore, tenetur non voluptate illum id voluptatibus voluptas quis
-        consequuntur doloribus eius.
-      </p>
     </div>
   );
 }
