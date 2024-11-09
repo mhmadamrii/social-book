@@ -5,7 +5,6 @@ import Image from "next/image";
 import { ImageIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
 import { Textarea } from "~/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -64,7 +63,7 @@ export function PostField() {
 
   return (
     <section className="mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4">
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>

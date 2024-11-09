@@ -7,6 +7,7 @@ import { api } from "~/trpc/server";
 
 export default async function Home() {
   const [session, posts] = await Promise.all([auth(), api.post.getAllPosts()]);
+  console.log("posts", posts);
 
   if (!session) {
     redirect("/login");
@@ -29,7 +30,15 @@ export default async function Home() {
             ) : (
               <div className="flex flex-col gap-4">
                 {posts?.map((item) => (
-                  <PostCard key={item.id} title={item.content} />
+                  <PostCard
+                    key={item.id}
+                    createdAt={item.createdAt}
+                    updatedAt={item.updatedAt}
+                    userId={item.userId}
+                    id={item.id}
+                    title={item.content}
+                    creator={item.user}
+                  />
                 ))}
               </div>
             )}

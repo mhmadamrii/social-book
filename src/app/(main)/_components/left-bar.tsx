@@ -20,7 +20,7 @@ export function LeftBar() {
 
       <Link
         className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-800"
-        href="/"
+        href="/notifications"
       >
         <div className="relative">
           <Bell />

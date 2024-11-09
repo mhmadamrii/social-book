@@ -85,7 +85,7 @@ model Post {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    user    User      @relation(fields: [userId], references: [id])
+    user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     Comment Comment[]
 
     @@map("posts")
@@ -99,7 +99,7 @@ model Like {
     updatedAt DateTime @updatedAt
 
     user User @relation(fields: [userId], references: [id])
-    post Post @relation(fields: [postId], references: [id])
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
@@ -111,7 +111,7 @@ model Comment {
     updatedAt DateTime @updatedAt
 
     user User @relation(fields: [userId], references: [id])
-    post Post @relation(fields: [postId], references: [id])
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
     @@map("comments")
 }
