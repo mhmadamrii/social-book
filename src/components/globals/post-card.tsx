@@ -3,22 +3,24 @@
 import Heart from "@react-sandbox/heart";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { DialogReportPost } from "./dialog-report-post";
+import { Comments } from "./comments";
 import { useRouter } from "next/navigation";
 import { toast } from "~/hooks/use-toast";
-import { User } from "@prisma/client";
+import { Like, User } from "@prisma/client";
 import { Button } from "../ui/button";
 import { cn } from "~/lib/utils";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "~/trpc/react";
 import { Separator } from "~/components/ui/separator";
 import { Input } from "../ui/input";
 
 import {
+  Ban,
   Bookmark,
   Flag,
   MessageCircleMore,
   MoreVertical,
-  SendHorizonal,
   Trash,
 } from "lucide-react";
 
@@ -28,7 +30,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Comments } from "./comments";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import { Label } from "@radix-ui/react-label";
+import { Textarea } from "../ui/textarea";
 
 interface PostCardProps {
   id: number;
@@ -36,26 +48,40 @@ interface PostCardProps {
   userId: string;
   createdAt: Date;
   updatedAt: Date;
-  creator: User;
+  likesCount: number;
+  commentsCount: number;
+  isLikedByUser: boolean;
+  creator: {
+    id: string;
+    username: string | null;
+    name: string | null;
+    image: string | null;
+  };
 }
 
 export function PostCard({
   title,
   id,
   userId,
-  createdAt,
-  updatedAt,
   creator,
+  commentsCount,
+  likesCount,
+  isLikedByUser,
 }: PostCardProps) {
   const [isClick, setClick] = useState(false);
   const [isOpenComment, setIsOpenComment] = useState(false);
+  const [totalLikes, setTotalLikes] = useState(likesCount);
+
   const commentRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const { data: likes } = api.post.getPostLikes.useQuery({ id });
-  const { mutate: increaseLikes } = api.post.increaseLikes.useMutation({});
   const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation();
-  const { data: comments } = api.post.getAllComments.useQuery({ postId: id });
+  const { mutate: increaseLikes } = api.post.increaseLikes.useMutation({
+    onSuccess: (res) => {
+      console.log("success", res);
+    },
+  });
+
   const {
     mutate: deletePost,
     isPending: isPendingDeletePost,
@@ -70,7 +96,9 @@ export function PostCard({
     },
   });
 
-  const handleReport = () => {};
+  const handleReport = () => {
+    console.log("report for post", id);
+  };
 
   const handleToggleComment = async () => {
     setIsOpenComment((prev) => !prev);
@@ -81,13 +109,21 @@ export function PostCard({
   };
 
   const onClickLikeHandler = () => {
-    if (likes?.some((item) => item.userId === userId)) {
-      decreaseLikes({ id });
+    if (isLikedByUser) {
+      decreaseLikes({ id: id });
+      setTotalLikes((prev) => prev - 1);
     } else {
-      increaseLikes({ id });
+      setTotalLikes((prev) => prev + 1);
+      increaseLikes({ id: id });
     }
     setClick(!isClick);
   };
+
+  useEffect(() => {
+    if (isLikedByUser) {
+      setClick(true);
+    }
+  }, [isLikedByUser]);
 
   return (
     <section
@@ -114,24 +150,60 @@ export function PostCard({
         </div>
 
         <div className="">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[90px]" align="end">
-              <DropdownMenuItem onClick={() => deletePost({ id })}>
-                <Trash className="mr-2 h-4 w-4" />
-                <span>Delete</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleReport}>
-                <Flag className="mr-2 h-4 w-4" />
-                <span>Report</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[90px]" align="end">
+                <DropdownMenuItem onClick={() => deletePost({ id })}>
+                  <Trash className="mr-2 h-4 w-4" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleReport}>
+                  <Flag className="mr-2 h-4 w-4" />
+                  <DialogTrigger>
+                    <span>Report</span>
+                  </DialogTrigger>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Ban />
+                  Report Post
+                </DialogTitle>
+                <DialogDescription>
+                  Report this post if it violates our community guidelines. A{" "}
+                  <span className="text-red-500 underline">
+                    minimum of 3 reports
+                  </span>{" "}
+                  is required to review and potentially delete the post.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="items-center">
+                  <Label htmlFor="name" className="text-sm font-medium">
+                    Reason
+                  </Label>
+                  <Textarea
+                    id="name"
+                    defaultValue="Post contains violation of our community guidelines"
+                    className="col-span-3"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button onClick={handleReport} type="submit">
+                  Report
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -150,12 +222,12 @@ export function PostCard({
             <Heart
               width={24}
               height={24}
-              active={likes?.some((item) => item.userId === userId) ?? false}
+              active={isClick}
               onClick={() => setClick(!isClick)}
               inactiveColor="#FFFF"
               strokeWidth={60}
             />
-            <h2 className="text-sm font-bold">{likes?.length || 0} Likes</h2>
+            <h2 className="text-sm font-bold">{totalLikes || 0} Likes</h2>
           </div>
 
           <div
@@ -163,9 +235,7 @@ export function PostCard({
             className="flex cursor-pointer items-center gap-1"
           >
             <MessageCircleMore />
-            <h2 className="text-sm font-bold">
-              {comments?.length || 0} Comments
-            </h2>
+            <h2 className="text-sm font-bold">{commentsCount || 0} Comments</h2>
           </div>
         </div>
 
@@ -176,9 +246,7 @@ export function PostCard({
         </div>
       </div>
 
-      {isOpenComment && (
-        <Comments postId={id} comments={comments} commentRef={commentRef} />
-      )}
+      {isOpenComment && <Comments postId={id} commentRef={commentRef} />}
     </section>
   );
 }

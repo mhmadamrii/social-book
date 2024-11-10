@@ -2,12 +2,12 @@ import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
 import { PostField } from "./_components/post-field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { PostCard } from "~/components/globals/post-card";
-import { api } from "~/trpc/server";
+import { PostSkeleton } from "~/components/globals/post-skeleton";
+import { YourFeed } from "./_components/your-feed";
+import { Suspense } from "react";
 
 export default async function Home() {
-  const [session, posts] = await Promise.all([auth(), api.post.getAllPosts()]);
-  console.log("posts", posts);
+  const [session] = await Promise.all([auth()]);
 
   if (!session) {
     redirect("/login");
@@ -23,30 +23,12 @@ export default async function Home() {
             <TabsTrigger value="following">Following</TabsTrigger>
           </TabsList>
           <TabsContent value="for-you">
-            {posts.length === 0 ? (
-              <div>
-                <h1 className="text-center">No post yet.</h1>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-4">
-                {posts?.map((item) => (
-                  <PostCard
-                    key={item.id}
-                    createdAt={item.createdAt}
-                    updatedAt={item.updatedAt}
-                    userId={item.userId}
-                    id={item.id}
-                    title={item.content}
-                    creator={item.user}
-                  />
-                ))}
-              </div>
-            )}
+            <Suspense fallback={<PostSkeleton count={2} />}>
+              <YourFeed userId={session?.user.id} />
+            </Suspense>
           </TabsContent>
           <TabsContent value="following">
-            <div>
-              <h1>Hello world following</h1>
-            </div>
+            <PostSkeleton count={2} />
           </TabsContent>
         </Tabs>
       </div>

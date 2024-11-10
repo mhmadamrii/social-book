@@ -10,7 +10,7 @@ export default async function Layout({
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <div className="mx-auto flex w-full max-w-7xl grow gap-5 p-5">
+      <div className="mx-auto flex w-full max-w-7xl grow gap-5 pt-5">
         <LeftBar />
         {children}
         <RightBar />

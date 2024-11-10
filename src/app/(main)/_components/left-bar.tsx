@@ -9,7 +9,7 @@ export function LeftBar() {
   };
 
   return (
-    <aside className="sticky top-[5.25rem] hidden h-fit flex-none space-y-3 rounded-2xl bg-card bg-slate-900 px-3 py-5 shadow-sm sm:block lg:px-5 xl:w-80">
+    <aside className="sticky top-[6rem] hidden h-fit flex-none space-y-3 rounded-2xl bg-card bg-slate-900 px-3 py-5 shadow-sm sm:block lg:px-5 xl:w-80">
       <Link
         className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-800"
         href="/"
