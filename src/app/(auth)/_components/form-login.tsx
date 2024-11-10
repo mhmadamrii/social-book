@@ -2,10 +2,15 @@
 
 import { Input } from "~/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DiscordIcon } from "~/components/globals/discord-icon";
+import { cn } from "~/lib/utils";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Button } from "~/components/ui/button";
+import { signIn } from "next-auth/react";
 import { LoginValues, loginSchema } from "~/lib/validation";
 import { InputPassword } from "~/components/ui/input-password";
-import { LoadingButton } from "~/components/globals/loading-button";
 
 import {
   Form,
@@ -15,10 +20,11 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Button } from "~/components/ui/button";
-import { signIn } from "next-auth/react";
 
 export function FormLogin() {
+  const [loginError, setLoginError] = useState("");
+  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -28,16 +34,31 @@ export function FormLogin() {
   });
 
   async function onSubmit(values: LoginValues) {
-    console.log("values", values);
+    setIsPending(true);
+    try {
+      const res = await signIn("credentials", {
+        username: values.username,
+        password: values.password,
+        redirect: false,
+      });
+      if (res?.error === "CredentialsSignin") {
+        setLoginError("Incorrect username or password");
+        return;
+      }
+      router.push("/");
+    } catch (error) {
+      console.log("probably", error);
+    } finally {
+      setIsPending(false);
+    }
   }
-
-  const error = "heheheheh";
-  const isPending = false;
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        {error && <p className="text-center text-destructive">{error}</p>}
+        {loginError !== "" && (
+          <p className="text-center text-destructive">{loginError}</p>
+        )}
         <FormField
           control={form.control}
           name="username"
@@ -64,10 +85,20 @@ export function FormLogin() {
             </FormItem>
           )}
         />
-        {/* <LoadingButton loading={isPending} type="submit" className="w-full">
-          Log in
-        </LoadingButton> */}
-        <Button className="w-full" onClick={() => signIn("discord")}>Login</Button>
+        <Button className={cn("flex w-full gap-2 transition-all")}>
+          {isPending ? "Logging in..." : "Log in"}
+        </Button>
+        <div className="flex w-full justify-center">
+          <Button
+            type="button"
+            onClick={() => signIn("discord")}
+            disabled={isPending}
+            className="inline-flex items-center rounded-2xl bg-[#5865F2] px-4 py-2 font-semibold text-white hover:bg-[#4752C4]"
+          >
+            <DiscordIcon />
+            {isPending ? "Loading..." : "Login with Discord"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

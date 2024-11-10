@@ -4,9 +4,9 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 export const postRouter = createTRPCRouter({
   getAllPosts: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.post.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
+      // where: {
+      //   userId: ctx.session.user.id,
+      // },
       orderBy: {
         createdAt: "desc",
       },
@@ -99,6 +99,9 @@ export const postRouter = createTRPCRouter({
       return ctx.db.comment.findMany({
         where: {
           postId: input.postId,
+        },
+        include: {
+          user: true,
         },
       });
     }),

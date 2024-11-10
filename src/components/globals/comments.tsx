@@ -51,7 +51,11 @@ export function Comments({ commentRef, postId }: CommentsProps) {
           placeholder="Write a comment..."
           className="w-full"
         />
-        <Button className="h-[40px] w-[40px]" variant="ghost">
+        <Button
+          disabled={comment === ""}
+          className="h-[40px] w-[40px]"
+          variant="ghost"
+        >
           {isPending ? <LoadingSpinner /> : <SendHorizonal />}
         </Button>
       </div>

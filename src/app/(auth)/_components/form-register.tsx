@@ -1,11 +1,18 @@
 "use client";
 
+// @ts-expect-error
+import bcryptjs from "bcryptjs";
+
 import { Input } from "~/components/ui/input";
+import { useState } from "react";
+import { toast } from "~/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "~/trpc/react";
 import { useForm } from "react-hook-form";
 import { RegisterSchema, registerSchema } from "~/lib/validation";
+import { cn } from "~/lib/utils";
+import { Button } from "~/components/ui/button";
 import { InputPassword } from "~/components/ui/input-password";
-import { LoadingButton } from "~/components/globals/loading-button";
 
 import {
   Form,
@@ -17,6 +24,7 @@ import {
 } from "~/components/ui/form";
 
 export function FormRegister() {
+  const [errorMessage, setErrorMessage] = useState("");
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -26,17 +34,34 @@ export function FormRegister() {
     },
   });
 
-  async function onSubmit(values: RegisterSchema) {
-    console.log("values", values);
-  }
+  const { mutate, isPending } = api.auth.signUp.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Registered",
+        description: "lorem ipsum",
+      });
+    },
+    onError: (err: any) => {
+      setErrorMessage(err.message);
+    },
+  });
 
-  const error = "heheheheh";
-  const isPending = false;
+  async function onSubmit(values: RegisterSchema) {
+    const hashedPasssword = await bcryptjs.hash(values.password, 12);
+
+    mutate({
+      email: values.email,
+      username: values.username,
+      password: hashedPasssword,
+    });
+  }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        {error && <p className="text-center text-destructive">{error}</p>}
+        {errorMessage && (
+          <p className="text-center text-destructive">{errorMessage}</p>
+        )}
         <FormField
           control={form.control}
           name="username"
@@ -44,7 +69,7 @@ export function FormRegister() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input disabled={isPending} placeholder="Username" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -57,7 +82,12 @@ export function FormRegister() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" type="email" {...field} />
+                <Input
+                  disabled={isPending}
+                  placeholder="Email"
+                  type="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,15 +100,19 @@ export function FormRegister() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <InputPassword placeholder="Password" {...field} />
+                <InputPassword
+                  disabled={isPending}
+                  placeholder="Password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <LoadingButton loading={isPending} type="submit" className="w-full">
-          Create account
-        </LoadingButton>
+        <Button className={cn("flex w-full gap-2 transition-all")}>
+          {isPending ? "Logging in..." : "Register"}
+        </Button>
       </form>
     </Form>
   );

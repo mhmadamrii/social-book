@@ -30,7 +30,6 @@ interface AttachmentPreviewProps {
 
 export function PostField() {
   const router = useRouter();
-  const utils = api.useUtils();
   const attachments = [];
   const { toast } = useToast();
   const removeAttachment = () => {};

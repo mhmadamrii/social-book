@@ -3,15 +3,17 @@
 import Heart from "@react-sandbox/heart";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { DialogReportPost } from "./dialog-report-post";
 import { Comments } from "./comments";
 import { useRouter } from "next/navigation";
 import { toast } from "~/hooks/use-toast";
 import { Like, User } from "@prisma/client";
 import { Button } from "../ui/button";
-import { cn } from "~/lib/utils";
+import { cn, getInitial } from "~/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { api } from "~/trpc/react";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import { Label } from "@radix-ui/react-label";
+import { Textarea } from "../ui/textarea";
 import { Separator } from "~/components/ui/separator";
 import { Input } from "../ui/input";
 
@@ -30,6 +32,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+
 import {
   Dialog,
   DialogContent,
@@ -38,9 +41,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { DialogTrigger } from "@radix-ui/react-dialog";
-import { Label } from "@radix-ui/react-label";
-import { Textarea } from "../ui/textarea";
 
 interface PostCardProps {
   id: number;
@@ -137,8 +137,10 @@ export function PostCard({
       <div className="flex items-center">
         <div className="flex w-full items-center gap-2">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={creator?.image as string} />
+            <AvatarFallback>
+              {getInitial(creator?.username ?? (creator?.name as string))}
+            </AvatarFallback>
           </Avatar>
 
           <div className="flex flex-col gap-1">
