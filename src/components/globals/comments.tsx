@@ -4,8 +4,8 @@ import { Input } from "../ui/input";
 import { RefObject, useState } from "react";
 import { api } from "~/trpc/react";
 import { UserCommentCard } from "./user-comment-card";
-import { PostSkeleton } from "./post-skeleton";
 import { LoadingSpinner } from "./loading-spinner";
+import { UserSkeleton } from "./user-skeleton";
 
 interface CommentsProps {
   postId: number;
@@ -37,7 +37,7 @@ export function Comments({ commentRef, postId }: CommentsProps) {
   };
 
   if (isLoading) {
-    return <PostSkeleton count={2} />;
+    return <UserSkeleton count={2} />;
   }
 
   return (

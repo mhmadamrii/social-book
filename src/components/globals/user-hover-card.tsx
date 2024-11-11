@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/hover-card";
 
 export function UserHoverCard({ userId }: { userId: string }) {
-  const { data: creator, isLoading } = api.auth.getHoveredUser.useQuery({
+  const { data: user, isLoading } = api.auth.getHoveredUser.useQuery({
     userId,
   });
 
@@ -24,8 +24,8 @@ export function UserHoverCard({ userId }: { userId: string }) {
     <HoverCard>
       <HoverCardTrigger asChild>
         <div className="flex cursor-pointer items-center gap-1 hover:underline">
-          {creator?.name}
-          {creator?.isVerified && (
+          {user?.name}
+          {user?.isVerified && (
             <span>
               <VerifiedIcon />
             </span>
@@ -35,9 +35,9 @@ export function UserHoverCard({ userId }: { userId: string }) {
       <HoverCardContent className="flex w-72 flex-col gap-2">
         <div className="flex justify-between space-x-4">
           <Avatar>
-            <AvatarImage src={creator?.image as string} />
+            <AvatarImage src={user?.image as string} />
             <AvatarFallback>
-              {getInitial(creator?.username ?? (creator?.name as string))}
+              {getInitial(user?.username ?? (user?.name as string))}
             </AvatarFallback>
           </Avatar>
           <div className="space-y-1">
@@ -49,21 +49,25 @@ export function UserHoverCard({ userId }: { userId: string }) {
         </div>
         <div>
           <h1 className="flex cursor-pointer items-center gap-1">
-            <span className="hover:underline">{creator?.name}</span>
-            {creator?.isVerified && (
+            <span className="hover:underline">{user?.name}</span>
+            {user?.isVerified && (
               <span>
                 <VerifiedIcon />
               </span>
             )}
           </h1>
-          <span className="text-muted-foreground">@{creator?.username}</span>
+          <span className="text-muted-foreground">@{user?.username}</span>
           <div className="flex items-center gap-2">
-            <h1 className="text-sm text-muted-foreground">0 followers</h1>
-            <h1 className="text-sm text-muted-foreground">0 following</h1>
+            <h1 className="text-sm text-muted-foreground">
+              {user?.followers.length} followers
+            </h1>
+            <h1 className="text-sm text-muted-foreground">
+              {user?.followings.length} following
+            </h1>
           </div>
           <div>
-            {creator?.bio ? (
-              <p className="text-sm">{creator?.bio}</p>
+            {user?.bio ? (
+              <p className="text-sm">{user?.bio}</p>
             ) : (
               <p className="text-sm font-thin italic text-muted-foreground">
                 The user has not provided a bio yet.

@@ -32,6 +32,9 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
   if (isInitialLoading) {
     return <PostSkeleton count={3} />;
   }
+
+  console.log("inview", inView);
+  console.log("isFetchingNextPage", isFetchingNextPage);
   return (
     <div className="flex flex-col gap-4">
       {data?.pages.map((page, pageIndex) => (
@@ -55,7 +58,7 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
         </div>
       ))}
       {isFetchingNextPage && <PostSkeleton count={3} />}
-      <div ref={ref} className="loading-indicator"></div>
+      <div ref={ref} className="loading-indicator h-[50px]"></div>
     </div>
   );
 }

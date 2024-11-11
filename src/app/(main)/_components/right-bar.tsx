@@ -17,12 +17,13 @@ export function RightBar() {
 }
 
 async function WhoToFollow() {
-  const users = await api.auth.getAllUsers();
+  const availableUsers = await api.following.getAvailableFollows();
+
   return (
     <div className="space-y-3 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
       <div className="text-xl font-bold">Who to follow</div>
       <div className="flex w-full flex-col gap-3">
-        {users
+        {availableUsers
           ?.slice(1, 4)
           .map((item) => <UserCard key={item.id} user={item} />)}
       </div>

@@ -1,11 +1,21 @@
-import { BadgeCheck } from "lucide-react";
+"use client";
+
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { getInitial } from "~/lib/utils";
+import { api } from "~/trpc/react";
 
 export function UserCard({ user }: { user: any }) {
+  const utils = api.useUtils();
+
+  const { mutate: follow, isPending } = api.following.followUser.useMutation({
+    onSuccess: () => {
+      utils.following.invalidate();
+    },
+  });
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -30,7 +40,17 @@ export function UserCard({ user }: { user: any }) {
         </div>
 
         <div className="flex items-center">
-          <Button className="rounded-xl">Follow</Button>
+          <Button
+            disabled={isPending}
+            onClick={() =>
+              follow({
+                userId: user.id,
+              })
+            }
+            className="rounded-xl"
+          >
+            Follow
+          </Button>
         </div>
       </div>
       <Separator className="w-full" />

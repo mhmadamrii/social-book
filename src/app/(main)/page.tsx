@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { PostSkeleton } from "~/components/globals/post-skeleton";
 import { YourFeed } from "./_components/your-feed";
 import { Suspense } from "react";
+import { FollowingFeed } from "./_components/following-feed";
 
 export default async function Home() {
   const [session] = await Promise.all([auth()]);
@@ -26,7 +27,7 @@ export default async function Home() {
             <YourFeed userId={session?.user.id} />
           </TabsContent>
           <TabsContent value="following">
-            <PostSkeleton count={2} />
+            <FollowingFeed />
           </TabsContent>
         </Tabs>
       </div>
