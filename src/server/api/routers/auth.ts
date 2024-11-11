@@ -25,6 +25,24 @@ export const authRouter = createTRPCRouter({
     });
   }),
 
+  getCurrentUser: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.db.user.findFirst({
+      where: {
+        id: ctx.session.user.id,
+      },
+    });
+  }),
+
+  getHoveredUser: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.user.findFirst({
+        where: {
+          id: input.userId,
+        },
+      });
+    }),
+
   signUp: publicProcedure
     .input(
       z.object({

@@ -16,6 +16,7 @@ import { Label } from "@radix-ui/react-label";
 import { Textarea } from "../ui/textarea";
 import { Separator } from "~/components/ui/separator";
 import { Input } from "../ui/input";
+import { UserHoverCard } from "./user-hover-card";
 
 import {
   Ban,
@@ -143,11 +144,13 @@ export function PostCard({
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold">
-              {creator.username ?? creator.name}
+          <div className="flex flex-col">
+            <h2 className="text-[15px] font-bold">
+              <UserHoverCard userId={userId} />
+              {" · "}
+              <span className="text-muted-foreground">@{creator.username}</span>
             </h2>
-            <p className="text-sm text-muted-foreground">4 hours ago</p>
+            <p className="text-[12px] text-muted-foreground">4 hours ago</p>
           </div>
         </div>
 
