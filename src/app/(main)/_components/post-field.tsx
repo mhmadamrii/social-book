@@ -2,40 +2,25 @@
 
 import Image from "next/image";
 
-import { ImageIcon, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { X } from "lucide-react";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
 import { Textarea } from "~/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { api } from "~/trpc/react";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "next/navigation";
-
-interface Attachment {
-  file: File;
-  mediaId?: string;
-  isUploading: boolean;
-}
-
-interface AttachmentPreviewsProps {
-  attachments: Attachment[];
-  removeAttachment: (fileName: string) => void;
-}
-
-interface AttachmentPreviewProps {
-  attachment: Attachment;
-  onRemoveClick: () => void;
-}
+import { UploadFile } from "~/components/globals/upload-file";
+import { deleteFiles } from "~/lib/utapi";
 
 export function PostField() {
-  const router = useRouter();
-  const attachments = [];
-  const utils = api.useUtils();
   const { toast } = useToast();
-  const removeAttachment = () => {};
+
+  const router = useRouter();
+  const utils = api.useUtils();
+  const [isUploading, setIsUploading] = useState(false);
   const [post, setPost] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<any>(null);
 
   const { mutate, isPending } = api.post.create.useMutation({
     onSuccess: async (res) => {
@@ -62,6 +47,19 @@ export function PostField() {
     });
   };
 
+  const deletePreviewImage = async () => {
+    console.log("the file", file);
+    try {
+      const deletePreview = await deleteFiles(file?.key as string);
+      console.log("deletePreview", deletePreview);
+      if (deletePreview?.success) {
+        setFile(null);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   return (
     <section className="mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4">
       <div className="flex items-start gap-3">
@@ -78,8 +76,35 @@ export function PostField() {
           onChange={(e) => setPost(e.target.value)}
         />
       </div>
+      <div className="relative flex items-center justify-center">
+        {isUploading && (
+          <div className="flex items-center justify-center space-x-2 dark:invert">
+            <span className="sr-only">Loading...</span>
+            <div className="h-5 w-5 animate-bounce rounded-full bg-black [animation-delay:-0.3s]"></div>
+            <div className="h-5 w-5 animate-bounce rounded-full bg-black [animation-delay:-0.15s]"></div>
+            <div className="h-5 w-5 animate-bounce rounded-full bg-black"></div>
+          </div>
+        )}
+        {file?.url && (
+          <>
+            <Image
+              src={file?.url as string}
+              alt="preview"
+              width={500}
+              height={500}
+              className="size-fit max-h-[30rem] rounded-2xl"
+            />
+            <div
+              onClick={deletePreviewImage}
+              className="absolute right-2 top-2 cursor-pointer"
+            >
+              <X />
+            </div>
+          </>
+        )}
+      </div>
       <div className="flex w-full justify-end gap-3 rounded-xl">
-        <AddAttachmentsButton disabled={false} onFilesSelected={setFile} />
+        <UploadFile setIsUploading={setIsUploading} setFile={setFile} />
         <Button
           onClick={handleCreatePost}
           disabled={post === "" || isPending}
@@ -89,102 +114,5 @@ export function PostField() {
         </Button>
       </div>
     </section>
-  );
-}
-
-interface AddAttachmentsButtonProps {
-  onFilesSelected: (files: File[]) => void;
-  disabled: boolean;
-}
-
-function AddAttachmentsButton({
-  onFilesSelected,
-  disabled,
-}: AddAttachmentsButtonProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  return (
-    <>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="text-primary hover:text-primary"
-        disabled={disabled}
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <ImageIcon size={20} />
-      </Button>
-      <input
-        type="file"
-        accept="image/*, video/*"
-        multiple
-        ref={fileInputRef}
-        className="sr-only hidden"
-        onChange={(e) => {
-          const files = Array.from(e.target.files || []);
-          if (files.length) {
-            onFilesSelected(files);
-            e.target.value = "";
-          }
-        }}
-      />
-    </>
-  );
-}
-
-function AttachmentPreviews({
-  attachments,
-  removeAttachment,
-}: AttachmentPreviewsProps) {
-  return (
-    <div
-      className={cn(
-        "flex flex-col gap-3 border border-red-500",
-        attachments.length > 1 && "sm:grid sm:grid-cols-2",
-      )}
-    >
-      {attachments.map((attachment) => (
-        <AttachmentPreview
-          key={attachment.file.name}
-          attachment={attachment}
-          onRemoveClick={() => removeAttachment(attachment.file.name)}
-        />
-      ))}
-    </div>
-  );
-}
-
-function AttachmentPreview({
-  attachment: { file, mediaId, isUploading },
-  onRemoveClick,
-}: AttachmentPreviewProps) {
-  const src = URL.createObjectURL(file);
-
-  return (
-    <div
-      className={cn("relative mx-auto size-fit", isUploading && "opacity-50")}
-    >
-      {file.type.startsWith("image") ? (
-        <Image
-          src={src}
-          alt="Attachment preview"
-          width={500}
-          height={500}
-          className="size-fit max-h-[30rem] rounded-2xl"
-        />
-      ) : (
-        <video controls className="size-fit max-h-[30rem] rounded-2xl">
-          <source src={src} type={file.type} />
-        </video>
-      )}
-      {!isUploading && (
-        <button
-          onClick={onRemoveClick}
-          className="absolute right-3 top-3 rounded-full bg-foreground p-1.5 text-background transition-colors hover:bg-foreground/60"
-        >
-          <X size={20} />
-        </button>
-      )}
-    </div>
   );
 }
