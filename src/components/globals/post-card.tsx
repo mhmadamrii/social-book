@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Comments } from "./comments";
 import { useRouter } from "next/navigation";
 import { toast } from "~/hooks/use-toast";
-import { Like, User } from "@prisma/client";
 import { Button } from "../ui/button";
 import { cn, getInitial } from "~/lib/utils";
 import { useEffect, useRef, useState } from "react";
@@ -15,7 +14,6 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
 import { Textarea } from "../ui/textarea";
 import { Separator } from "~/components/ui/separator";
-import { Input } from "../ui/input";
 import { UserHoverCard } from "./user-hover-card";
 
 import {
@@ -74,6 +72,7 @@ export function PostCard({
   const [totalLikes, setTotalLikes] = useState(likesCount);
 
   const commentRef = useRef<HTMLInputElement>(null);
+  const utils = api.useUtils();
   const router = useRouter();
 
   const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation();
@@ -89,7 +88,7 @@ export function PostCard({
     isError: isErrorDeletePost,
   } = api.post.deletePost.useMutation({
     onSuccess: () => {
-      router.refresh();
+      utils.post.invalidate();
       toast({
         title: "Post Deleted",
         description: "lorem ipsum",
@@ -103,7 +102,7 @@ export function PostCard({
 
   const handleToggleComment = async () => {
     setIsOpenComment((prev) => !prev);
-    await new Promise((res) => setTimeout(res, 200));
+    await new Promise((res) => setTimeout(res, 350));
     if (commentRef.current) {
       commentRef.current.focus();
     }
@@ -239,7 +238,7 @@ export function PostCard({
             onClick={handleToggleComment}
             className="flex cursor-pointer items-center gap-1"
           >
-            <MessageCircleMore />
+            <MessageCircleMore className="text-muted-foreground" />
             <h2 className="text-sm font-bold">{commentsCount || 0} Comments</h2>
           </div>
         </div>

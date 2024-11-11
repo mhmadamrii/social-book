@@ -31,6 +31,7 @@ interface AttachmentPreviewProps {
 export function PostField() {
   const router = useRouter();
   const attachments = [];
+  const utils = api.useUtils();
   const { toast } = useToast();
   const removeAttachment = () => {};
   const [post, setPost] = useState("");
@@ -39,6 +40,7 @@ export function PostField() {
   const { mutate, isPending } = api.post.create.useMutation({
     onSuccess: async (res) => {
       router.refresh();
+      utils.post.invalidate();
       setPost("");
       toast({
         title: "Post Created",

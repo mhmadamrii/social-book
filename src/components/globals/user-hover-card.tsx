@@ -1,4 +1,5 @@
 import { CalendarDays, Plus, PlusIcon } from "lucide-react";
+import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
 import { getInitial } from "~/lib/utils";
@@ -40,7 +41,14 @@ export function UserHoverCard({ userId }: { userId: string }) {
           </div>
         </div>
         <div>
-          <h1 className="cursor-pointer hover:underline">{creator?.name}</h1>
+          <h1 className="flex cursor-pointer items-center gap-1">
+            <span className="hover:underline">{creator?.name}</span>
+            {creator?.isVerified && (
+              <span>
+                <VerifiedIcon />
+              </span>
+            )}
+          </h1>
           <span className="text-muted-foreground">@{creator?.username}</span>
           <div className="flex items-center gap-2">
             <h1 className="text-sm text-muted-foreground">0 followers</h1>

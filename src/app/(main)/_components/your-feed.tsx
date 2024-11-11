@@ -1,34 +1,59 @@
+"use client";
+
 import { PostCard } from "~/components/globals/post-card";
-import { api } from "~/trpc/server";
+import { api } from "~/trpc/react";
+import { useInView } from "react-intersection-observer";
+import { PostSkeleton } from "~/components/globals/post-skeleton";
+import { useEffect } from "react";
 
-export async function YourFeed({ userId }: { userId: string | undefined }) {
-  const posts = await api.post.getAllPosts();
-  console.dir(posts, { depth: null });
+export function YourFeed({ userId }: { userId: string | undefined }) {
+  const { ref, inView } = useInView();
 
-  if (posts.length === 0) {
-    return (
-      <div>
-        <h1 className="text-center">No post yet.</h1>
-      </div>
-    );
+  const {
+    data,
+    isFetchingNextPage,
+    fetchNextPage,
+    isLoading: isInitialLoading,
+  } = api.post.getAllInfinitePosts.useInfiniteQuery(
+    {
+      limit: 2,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor || null, // Implement cursor logic
+    },
+  );
+
+  useEffect(() => {
+    if (inView && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, isFetchingNextPage, fetchNextPage]);
+
+  if (isInitialLoading) {
+    return <PostSkeleton count={3} />;
   }
-
   return (
     <div className="flex flex-col gap-4">
-      {posts?.map((item) => (
-        <PostCard
-          key={item.id}
-          createdAt={item.createdAt}
-          updatedAt={item.updatedAt}
-          userId={item.userId}
-          id={item.id}
-          title={item.content}
-          likesCount={item._count.likes}
-          commentsCount={item._count.comments}
-          creator={item.user}
-          isLikedByUser={item.likes.some((like) => like.userId === userId)}
-        />
+      {data?.pages.map((page, pageIndex) => (
+        <div key={pageIndex} className="flex flex-col gap-4">
+          {page?.posts?.map((item) => (
+            <PostCard
+              key={item.id}
+              createdAt={item.createdAt}
+              updatedAt={item.updatedAt}
+              userId={item.userId}
+              id={item.id}
+              title={item.content}
+              likesCount={item._count.likes}
+              commentsCount={item._count.comments}
+              creator={item.user}
+              isLikedByUser={item.likes.some((like) => like.userId === userId)}
+            />
+          ))}
+        </div>
       ))}
+      {isFetchingNextPage && <PostSkeleton count={3} />}
+      <div ref={ref} className="loading-indicator"></div>
     </div>
   );
 }

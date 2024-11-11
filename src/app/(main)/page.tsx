@@ -23,9 +23,7 @@ export default async function Home() {
             <TabsTrigger value="following">Following</TabsTrigger>
           </TabsList>
           <TabsContent value="for-you">
-            <Suspense fallback={<PostSkeleton count={2} />}>
-              <YourFeed userId={session?.user.id} />
-            </Suspense>
+            <YourFeed userId={session?.user.id} />
           </TabsContent>
           <TabsContent value="following">
             <PostSkeleton count={2} />

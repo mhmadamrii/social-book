@@ -4,9 +4,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 export const postRouter = createTRPCRouter({
   getAllPosts: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.post.findMany({
-      // where: {
-      //   userId: ctx.session.user.id,
-      // },
+      take: 3,
       orderBy: {
         createdAt: "desc",
       },
@@ -39,6 +37,50 @@ export const postRouter = createTRPCRouter({
       },
     });
   }),
+
+  getAllInfinitePosts: protectedProcedure
+    .input(z.object({ limit: z.number(), cursor: z.number().optional() }))
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit || 3;
+      const cursor = input.cursor; // Cursor from the previous request
+
+      const posts = await ctx.db.post.findMany({
+        take: limit + 1, // Fetch one extra item to determine if there's a next page
+        skip: cursor ? 1 : 0, // Skip the cursor if present
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { createdAt: "desc" }, // Adjust based on your needs
+        include: {
+          user: true,
+          likes: {
+            select: {
+              userId: true,
+            },
+          },
+          comments: {
+            select: {
+              userId: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+        },
+      });
+
+      let nextCursor = null;
+      if (posts.length > limit) {
+        const nextItem = posts.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        posts,
+        nextCursor,
+      };
+    }),
 
   create: protectedProcedure
     .input(z.object({ content: z.string().min(1) }))
