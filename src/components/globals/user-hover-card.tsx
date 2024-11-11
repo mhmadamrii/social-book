@@ -23,7 +23,14 @@ export function UserHoverCard({ userId }: { userId: string }) {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <span className="cursor-pointer hover:underline">{creator?.name}</span>
+        <div className="flex cursor-pointer items-center gap-1 hover:underline">
+          {creator?.name}
+          {creator?.isVerified && (
+            <span>
+              <VerifiedIcon />
+            </span>
+          )}
+        </div>
       </HoverCardTrigger>
       <HoverCardContent className="flex w-72 flex-col gap-2">
         <div className="flex justify-between space-x-4">

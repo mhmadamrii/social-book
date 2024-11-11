@@ -1,6 +1,7 @@
 "use client";
 
 import Heart from "@react-sandbox/heart";
+import Image from "next/image";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Comments } from "./comments";
@@ -50,6 +51,8 @@ interface PostCardProps {
   likesCount: number;
   commentsCount: number;
   isLikedByUser: boolean;
+  imageUrl: string | null;
+  isCurrentUserOwnedPost: boolean;
   creator: {
     id: string;
     username: string | null;
@@ -66,6 +69,8 @@ export function PostCard({
   commentsCount,
   likesCount,
   isLikedByUser,
+  imageUrl,
+  isCurrentUserOwnedPost,
 }: PostCardProps) {
   const [isClick, setClick] = useState(false);
   const [isOpenComment, setIsOpenComment] = useState(false);
@@ -73,7 +78,6 @@ export function PostCard({
 
   const commentRef = useRef<HTMLInputElement>(null);
   const utils = api.useUtils();
-  const router = useRouter();
 
   const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation();
   const { mutate: increaseLikes } = api.post.increaseLikes.useMutation({
@@ -144,11 +148,11 @@ export function PostCard({
           </Avatar>
 
           <div className="flex flex-col">
-            <h2 className="text-[15px] font-bold">
+            <div className="flex items-center gap-1 text-[15px] font-bold">
               <UserHoverCard userId={userId} />
               {" · "}
               <span className="text-muted-foreground">@{creator.username}</span>
-            </h2>
+            </div>
             <p className="text-[12px] text-muted-foreground">4 hours ago</p>
           </div>
         </div>
@@ -163,7 +167,12 @@ export function PostCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[90px]" align="end">
-                <DropdownMenuItem onClick={() => deletePost({ id })}>
+                <DropdownMenuItem
+                  className={cn("flex items-center gap-2", {
+                    hidden: !isCurrentUserOwnedPost,
+                  })}
+                  onClick={() => deletePost({ id })}
+                >
                   <Trash className="mr-2 h-4 w-4" />
                   <span>Delete</span>
                 </DropdownMenuItem>
@@ -211,8 +220,19 @@ export function PostCard({
         </div>
       </div>
 
-      <div>
+      <div className="flex flex-col gap-2">
         <p>{title}</p>
+        <div className="flex w-full items-center justify-center">
+          {imageUrl && (
+            <Image
+              src={imageUrl as string}
+              alt="preview"
+              width={500}
+              height={500}
+              className="size-fit max-h-[30rem] rounded-2xl"
+            />
+          )}
+        </div>
       </div>
 
       <Separator />

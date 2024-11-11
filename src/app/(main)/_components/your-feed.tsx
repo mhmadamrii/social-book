@@ -47,7 +47,9 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
               likesCount={item._count.likes}
               commentsCount={item._count.comments}
               creator={item.user}
+              imageUrl={item.imageUrl}
               isLikedByUser={item.likes.some((like) => like.userId === userId)}
+              isCurrentUserOwnedPost={item.userId === userId}
             />
           ))}
         </div>

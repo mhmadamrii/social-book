@@ -27,6 +27,7 @@ export function PostField() {
       router.refresh();
       utils.post.invalidate();
       setPost("");
+      setFile(null);
       toast({
         title: "Post Created",
         description: "lorem ipsum",
@@ -44,6 +45,7 @@ export function PostField() {
   const handleCreatePost = () => {
     mutate({
       content: post,
+      imageUrl: file?.url,
     });
   };
 
