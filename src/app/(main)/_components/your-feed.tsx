@@ -5,6 +5,7 @@ import { api } from "~/trpc/react";
 import { useInView } from "react-intersection-observer";
 import { PostSkeleton } from "~/components/globals/post-skeleton";
 import { useEffect } from "react";
+import { NoPostFound } from "~/components/globals/no-post-found";
 
 export function YourFeed({ userId }: { userId: string | undefined }) {
   const { ref, inView } = useInView();
@@ -12,6 +13,7 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
   const {
     data,
     isFetchingNextPage,
+    hasNextPage,
     fetchNextPage,
     isLoading: isInitialLoading,
   } = api.post.getAllInfinitePosts.useInfiniteQuery(
@@ -19,7 +21,7 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
       limit: 2,
     },
     {
-      getNextPageParam: (lastPage) => lastPage.nextCursor || null, // Implement cursor logic
+      getNextPageParam: (lastPage) => lastPage.nextCursor || null,
     },
   );
 
@@ -33,8 +35,12 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
     return <PostSkeleton count={3} />;
   }
 
-  console.log("inview", inView);
-  console.log("isFetchingNextPage", isFetchingNextPage);
+  if (data?.pages[0]?.posts.length === 0) {
+    return <NoPostFound />;
+  }
+
+  console.log("is has next", hasNextPage);
+
   return (
     <div className="flex flex-col gap-4">
       {data?.pages.map((page, pageIndex) => (
@@ -43,7 +49,6 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
             <PostCard
               key={item.id}
               createdAt={item.createdAt}
-              updatedAt={item.updatedAt}
               userId={item.userId}
               id={item.id}
               title={item.content}
@@ -51,14 +56,16 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
               commentsCount={item._count.comments}
               creator={item.user}
               imageUrl={item.imageUrl}
-              isLikedByUser={item.likes.some((like) => like.userId === userId)}
-              isCurrentUserOwnedPost={item.userId === userId}
+              isLikedByUser={item.likes.some(
+                (like) => like.userId === userId ?? false,
+              )}
+              isCurrentUserOwnedPost={item.userId === userId ?? false}
             />
           ))}
         </div>
       ))}
       {isFetchingNextPage && <PostSkeleton count={3} />}
-      <div ref={ref} className="loading-indicator h-[50px]"></div>
+      <div ref={ref} className="h-[50px]"></div>
     </div>
   );
 }

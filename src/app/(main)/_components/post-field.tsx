@@ -12,8 +12,11 @@ import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { UploadFile } from "~/components/globals/upload-file";
 import { deleteFiles } from "~/lib/utapi";
+import { AnimateUpload } from "~/components/globals/animate-upload";
+import { extractHashtags } from "~/lib/utils";
 
 export function PostField() {
+  const { data: currentUser } = api.auth.getCurrentUser.useQuery();
   const { toast } = useToast();
 
   const router = useRouter();
@@ -21,6 +24,8 @@ export function PostField() {
   const [isUploading, setIsUploading] = useState(false);
   const [post, setPost] = useState("");
   const [file, setFile] = useState<any>(null);
+
+  const { mutate: createTrending } = api.trending.createTrending.useMutation();
 
   const { mutate, isPending } = api.post.create.useMutation({
     onSuccess: async (res) => {
@@ -43,6 +48,12 @@ export function PostField() {
   });
 
   const handleCreatePost = () => {
+    const hashtags = extractHashtags(post);
+    if (hashtags.length > 0) {
+      createTrending({
+        content: hashtags,
+      });
+    }
     mutate({
       content: post,
       imageUrl: file?.url,
@@ -50,10 +61,8 @@ export function PostField() {
   };
 
   const deletePreviewImage = async () => {
-    console.log("the file", file);
     try {
       const deletePreview = await deleteFiles(file?.key as string);
-      console.log("deletePreview", deletePreview);
       if (deletePreview?.success) {
         setFile(null);
       }
@@ -66,7 +75,7 @@ export function PostField() {
     <section className="mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4">
       <div className="flex items-start gap-3">
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src={currentUser?.image as string} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
@@ -79,14 +88,7 @@ export function PostField() {
         />
       </div>
       <div className="relative flex items-center justify-center">
-        {isUploading && (
-          <div className="flex items-center justify-center space-x-2 dark:invert">
-            <span className="sr-only">Loading...</span>
-            <div className="h-5 w-5 animate-bounce rounded-full bg-black [animation-delay:-0.3s]"></div>
-            <div className="h-5 w-5 animate-bounce rounded-full bg-black [animation-delay:-0.15s]"></div>
-            <div className="h-5 w-5 animate-bounce rounded-full bg-black"></div>
-          </div>
-        )}
+        {isUploading && <AnimateUpload />}
         {file?.url && (
           <>
             <Image

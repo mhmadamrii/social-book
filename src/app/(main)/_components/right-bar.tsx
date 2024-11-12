@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import { LoadingSpinner } from "~/components/globals/loading-spinner";
 import { api } from "~/trpc/server";
 import { UserCard } from "./user-card";
+import { TrendingUp, UserPlus } from "lucide-react";
+import { Badge } from "~/components/ui/badge";
 
 export function RightBar() {
   return (
@@ -21,7 +23,10 @@ async function WhoToFollow() {
 
   return (
     <div className="space-y-3 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
-      <div className="text-xl font-bold">Who to follow</div>
+      <div className="flex items-center gap-2 text-xl font-bold">
+        <UserPlus className="h-5 w-5" />
+        Who to follow
+      </div>
       <div className="flex w-full flex-col gap-3">
         {availableUsers
           ?.slice(1, 4)
@@ -37,10 +42,31 @@ async function WhoToFollow() {
   );
 }
 
-function TrendingTopics() {
+async function TrendingTopics() {
+  const trendings = await api.trending.getAllTrendings();
+  console.log("trendings", trendings);
   return (
     <div className="space-y-5 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
-      <div className="text-xl font-bold">Trending Topics</div>
+      <div className="flex items-center gap-2 text-xl font-bold">
+        <TrendingUp className="h-5 w-5" />
+        Trending Topics
+      </div>
+      <div className="flex flex-col gap-2">
+        {trendings.slice(0, 3).map((item: any) => (
+          <div
+            key={item.hashtag}
+            className="flex items-center justify-between gap-2"
+          >
+            <Badge className="rounded-3xl bg-blue-500 text-sm font-medium">
+              {item?.hashtag}
+            </Badge>
+
+            <span className="text-sm text-muted-foreground">
+              {item?.count} posts
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -18,3 +18,25 @@ export function getInitial(name: string): string | undefined {
   // Return the initial of the first part (first name)
   return nameParts[0]?.charAt(0).toUpperCase();
 }
+
+export function extractHashtags(input: string): string[] {
+  // Regular expression to match hashtags
+  const hashtagPattern = /#\w+/g;
+
+  // Use the regex to find all hashtags in the input string
+  const matches = input.match(hashtagPattern);
+
+  // Return the matches or an empty array if no hashtags were found
+  return matches ? matches : [];
+}
+
+export function removeHashtags(input: string): string {
+  // Regular expression to match hashtags
+  const hashtagPattern = /#\w+/g;
+
+  // Replace hashtags with an empty string
+  const result = input.replace(hashtagPattern, "");
+
+  // Return the modified string
+  return result.trim(); // Trim to remove any leading or trailing whitespace
+}

@@ -46,7 +46,7 @@ export const postRouter = createTRPCRouter({
 
       const posts = await ctx.db.post.findMany({
         take: limit + 1, // Fetch one extra item to determine if there's a next page
-        skip: cursor ? 1 : 0, // Skip the cursor if present
+        // skip: cursor ? 1 : 0, // Skip the cursor if present
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { createdAt: "desc" }, // Adjust based on your needs
         include: {

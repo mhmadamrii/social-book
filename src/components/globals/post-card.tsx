@@ -5,10 +5,9 @@ import Image from "next/image";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Comments } from "./comments";
-import { useRouter } from "next/navigation";
 import { toast } from "~/hooks/use-toast";
 import { Button } from "../ui/button";
-import { cn, getInitial } from "~/lib/utils";
+import { cn, extractHashtags, getInitial, removeHashtags } from "~/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { api } from "~/trpc/react";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -22,6 +21,7 @@ import {
   Bookmark,
   Flag,
   MessageCircleMore,
+  MoreHorizontal,
   MoreVertical,
   Trash,
 } from "lucide-react";
@@ -47,7 +47,6 @@ interface PostCardProps {
   title: string;
   userId: string;
   createdAt: Date;
-  updatedAt: Date;
   likesCount: number;
   commentsCount: number;
   isLikedByUser: boolean;
@@ -72,6 +71,7 @@ export function PostCard({
   imageUrl,
   isCurrentUserOwnedPost,
 }: PostCardProps) {
+  const postHashtags = extractHashtags(title);
   const [isClick, setClick] = useState(false);
   const [isOpenComment, setIsOpenComment] = useState(false);
   const [totalLikes, setTotalLikes] = useState(likesCount);
@@ -80,11 +80,7 @@ export function PostCard({
   const utils = api.useUtils();
 
   const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation();
-  const { mutate: increaseLikes } = api.post.increaseLikes.useMutation({
-    onSuccess: (res) => {
-      console.log("success", res);
-    },
-  });
+  const { mutate: increaseLikes } = api.post.increaseLikes.useMutation();
 
   const {
     mutate: deletePost,
@@ -132,7 +128,7 @@ export function PostCard({
   return (
     <section
       className={cn(
-        "mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4",
+        "group mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4",
         {
           "cursor-not-allowed bg-slate-700 text-gray-500": isPendingDeletePost,
         },
@@ -162,8 +158,7 @@ export function PostCard({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreVertical className="h-4 w-4" />
+                  <MoreHorizontal className="h-4 w-4 text-slate-900 group-hover:text-white" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[90px]" align="end">
@@ -221,7 +216,17 @@ export function PostCard({
       </div>
 
       <div className="flex flex-col gap-2">
-        <p>{title}</p>
+        <p>{removeHashtags(title)}</p>
+        <div className="flex flex-wrap gap-2">
+          {postHashtags.map((hashtag) => (
+            <span
+              key={hashtag}
+              className="cursor-pointer text-blue-500 hover:underline"
+            >
+              {hashtag}
+            </span>
+          ))}
+        </div>
         <div className="flex w-full items-center justify-center">
           {imageUrl && (
             <Image

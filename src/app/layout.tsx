@@ -7,6 +7,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import { SessionWrapper } from "~/components/globals/session-wrapper";
 import { Toaster } from "~/components/ui/toaster";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -33,7 +34,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <Toaster />
-              {children}
+              <NuqsAdapter>{children}</NuqsAdapter>
             </ThemeProvider>
           </TRPCReactProvider>
         </SessionWrapper>

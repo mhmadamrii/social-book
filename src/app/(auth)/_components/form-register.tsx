@@ -5,6 +5,7 @@ import bcryptjs from "bcryptjs";
 
 import { Input } from "~/components/ui/input";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { toast } from "~/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "~/trpc/react";
@@ -24,6 +25,7 @@ import {
 } from "~/components/ui/form";
 
 export function FormRegister() {
+  const [tempPassword, setTempPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
@@ -35,7 +37,13 @@ export function FormRegister() {
   });
 
   const { mutate, isPending } = api.auth.signUp.useMutation({
-    onSuccess: () => {
+    onSuccess: async (res) => {
+      await signIn("credentials", {
+        username: res.username,
+        password: tempPassword,
+        redirect: true,
+      });
+
       toast({
         title: "Registered",
         description: "lorem ipsum",
@@ -104,6 +112,10 @@ export function FormRegister() {
                   disabled={isPending}
                   placeholder="Password"
                   {...field}
+                  onChange={(event) => {
+                    setTempPassword(event.target.value);
+                    field.onChange(event);
+                  }}
                 />
               </FormControl>
               <FormMessage />

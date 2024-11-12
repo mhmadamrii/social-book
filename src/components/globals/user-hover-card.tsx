@@ -12,9 +12,18 @@ import {
 } from "~/components/ui/hover-card";
 
 export function UserHoverCard({ userId }: { userId: string }) {
-  const { data: user, isLoading } = api.auth.getHoveredUser.useQuery({
-    userId,
-  });
+  const {
+    data: user,
+    isLoading,
+    refetch,
+  } = api.auth.getHoveredUser.useQuery(
+    {
+      userId,
+    },
+    {
+      enabled: true,
+    },
+  );
 
   if (isLoading) {
     return <span>Loading..</span>;
@@ -24,7 +33,7 @@ export function UserHoverCard({ userId }: { userId: string }) {
     <HoverCard>
       <HoverCardTrigger asChild>
         <div className="flex cursor-pointer items-center gap-1 hover:underline">
-          {user?.name}
+          {user?.name ?? user?.username}
           {user?.isVerified && (
             <span>
               <VerifiedIcon />

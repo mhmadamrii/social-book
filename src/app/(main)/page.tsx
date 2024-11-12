@@ -2,13 +2,12 @@ import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
 import { PostField } from "./_components/post-field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { PostSkeleton } from "~/components/globals/post-skeleton";
 import { YourFeed } from "./_components/your-feed";
-import { Suspense } from "react";
 import { FollowingFeed } from "./_components/following-feed";
 
 export default async function Home() {
-  const [session] = await Promise.all([auth()]);
+  const session = await auth();
+  console.log("session", session);
 
   if (!session) {
     redirect("/login");

@@ -65,7 +65,7 @@ export const authRouter = createTRPCRouter({
       if (isExistUser) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Email already exists",
+          message: "Email or username already exists",
         });
       }
 
