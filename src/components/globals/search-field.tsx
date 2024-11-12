@@ -11,7 +11,7 @@ export function SearchField() {
     console.log("Submitted");
   };
   return (
-    <form method="GET" action="/search">
+    <form method="GET" action="/search" className="w-full sm:w-auto">
       <div className="relative">
         <Input
           name="q"
@@ -19,7 +19,7 @@ export function SearchField() {
           placeholder="Search"
           className="pe-10"
         />
-        <SearchIcon className="absolute right-3 top-1/2 size-5 -translate-y-1/2 transform text-muted-foreground" />
+        <SearchIcon className="absolute right-3 top-1/2 size-5 -translate-y-1/2 transform text-blue-500 text-muted-foreground" />
       </div>
     </form>
   );

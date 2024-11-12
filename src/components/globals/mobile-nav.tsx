@@ -1,14 +1,31 @@
+"use client";
+
 import Link from "next/link";
 
 import { Bell, Bookmark, Home, Mail } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
-export function LeftBar() {
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer";
+import { api } from "~/trpc/react";
+
+export function MobileNav() {
+  const { data: currentUser } = api.auth.getCurrentUser.useQuery();
+  console.log("current user", currentUser);
   const data = {
     unreadCount: 2,
   };
 
   return (
-    <aside className="sticky top-[6rem] hidden h-fit flex-none space-y-3 rounded-2xl bg-card bg-slate-900 px-3 py-5 shadow-sm sm:block lg:px-5 xl:w-80">
+    <section className="sticky bottom-0 flex w-full justify-center gap-5 border-t bg-card p-3 sm:hidden">
       <Link
         className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-800"
         href="/"
@@ -53,6 +70,25 @@ export function LeftBar() {
         <Bookmark />
         <span className="hidden text-lg lg:inline">Bookmarks</span>
       </Link>
-    </aside>
+      <Drawer>
+        <DrawerTrigger>
+          <Avatar className="h-[30px] w-[30px]">
+            <AvatarImage src={currentUser?.image as string} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+            <DrawerDescription>This action cannot be undone.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <DrawerClose>
+              <span>Close</span>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </section>
   );
 }

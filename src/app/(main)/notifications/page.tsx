@@ -1,7 +1,4 @@
-import { api } from "~/trpc/server";
-
-export default async function Notifications() {
-  const user = await api.auth.getAllUsers();
+export default function Notifications() {
   return (
     <section>
       <p>

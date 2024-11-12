@@ -65,7 +65,7 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
         </div>
       ))}
       {isFetchingNextPage && <PostSkeleton count={3} />}
-      <div ref={ref} className="h-[50px]"></div>
+      <div ref={ref} className="h-[10px] sm:h-[50px]"></div>
     </div>
   );
 }

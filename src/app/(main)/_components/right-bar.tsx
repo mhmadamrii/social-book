@@ -44,7 +44,6 @@ async function WhoToFollow() {
 
 async function TrendingTopics() {
   const trendings = await api.trending.getAllTrendings();
-  console.log("trendings", trendings);
   return (
     <div className="space-y-5 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
       <div className="flex items-center gap-2 text-xl font-bold">
