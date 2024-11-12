@@ -7,7 +7,6 @@ import { FollowingFeed } from "./_components/following-feed";
 
 export default async function Home() {
   const session = await auth();
-  console.log("session", session);
 
   if (!session) {
     redirect("/login");

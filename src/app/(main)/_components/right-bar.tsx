@@ -6,6 +6,7 @@ import { api } from "~/trpc/server";
 import { UserCard } from "./user-card";
 import { TrendingUp, UserPlus } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
+import { SearchUser } from "~/components/globals/search-user";
 
 export function RightBar() {
   return (
@@ -19,7 +20,10 @@ export function RightBar() {
 }
 
 async function WhoToFollow() {
-  const availableUsers = await api.following.getAvailableFollows();
+  const [availableUsers, currentUser] = await Promise.all([
+    api.following.getAvailableFollows(),
+    api.auth.getCurrentUser(),
+  ]);
 
   return (
     <div className="space-y-3 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
@@ -29,15 +33,21 @@ async function WhoToFollow() {
       </div>
       <div className="flex w-full flex-col gap-3">
         {availableUsers
-          ?.slice(1, 4)
-          .map((item) => <UserCard key={item.id} user={item} />)}
+          ?.slice(0, 3)
+          .map((item) => (
+            <UserCard
+              key={item.id}
+              user={item}
+              followersCount={item._count.followings}
+              isAlreadyFollowing={
+                currentUser?.followers.some(
+                  (following) => following.followingId === item.id,
+                ) ?? false
+              }
+            />
+          ))}
       </div>
-      <Link
-        href="/users"
-        className="flex w-full justify-center text-center hover:underline"
-      >
-        See all users
-      </Link>
+      <SearchUser />
     </div>
   );
 }

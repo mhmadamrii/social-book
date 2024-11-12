@@ -19,6 +19,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { signOut } from "next-auth/react";
 
 export function UserButton() {
   const { theme, setTheme } = useTheme();
@@ -89,7 +90,7 @@ export function UserButton() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
-            console.log("logout");
+            signOut();
           }}
         >
           <LogOutIcon className="mr-2 size-4" />

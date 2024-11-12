@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -7,14 +8,29 @@ import { Separator } from "~/components/ui/separator";
 import { getInitial } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-export function UserCard({ user }: { user: any }) {
-  const utils = api.useUtils();
+export function UserCard({
+  user,
+  followersCount,
+  isAlreadyFollowing,
+}: {
+  user: any;
+  followersCount: number;
+  isAlreadyFollowing: boolean;
+}) {
+  const router = useRouter();
 
   const { mutate: follow, isPending } = api.following.followUser.useMutation({
     onSuccess: () => {
-      utils.following.invalidate();
+      router.refresh();
     },
   });
+
+  const { mutate: unfollow, isPending: isUnfollowing } =
+    api.following.unfollowUser.useMutation({
+      onSuccess: () => {
+        router.refresh();
+      },
+    });
 
   return (
     <>
@@ -27,29 +43,40 @@ export function UserCard({ user }: { user: any }) {
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <h2 className="flex items-center gap-1">
-              {user.name ?? ""}
-              {user?.isVerified && (
-                <span>
-                  <VerifiedIcon />
-                </span>
-              )}
-            </h2>
-            <p className="text-sm">@{user.username ?? ""}</p>
+            <div className="flex gap-2">
+              <h2 className="flex w-full items-center gap-1 truncate text-sm">
+                {user.name ?? user?.username}
+                {user?.isVerified && (
+                  <span>
+                    <VerifiedIcon />
+                  </span>
+                )}
+              </h2>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {followersCount} followers
+            </p>
           </div>
         </div>
 
         <div className="flex items-center">
           <Button
-            disabled={isPending}
-            onClick={() =>
-              follow({
-                userId: user.id,
-              })
-            }
+            variant={isAlreadyFollowing ? "outline" : "default"}
+            disabled={isPending || isUnfollowing}
+            onClick={() => {
+              if (isAlreadyFollowing) {
+                unfollow({
+                  userId: user.id,
+                });
+              } else {
+                follow({
+                  userId: user.id,
+                });
+              }
+            }}
             className="rounded-xl"
           >
-            Follow
+            {isAlreadyFollowing ? "Unfollow" : "Follow"}
           </Button>
         </div>
       </div>

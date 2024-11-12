@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { Bell, Bookmark, Home, Mail } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { api } from "~/trpc/react";
 
 import {
   Drawer,
@@ -15,11 +16,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
-import { api } from "~/trpc/react";
 
 export function MobileNav() {
   const { data: currentUser } = api.auth.getCurrentUser.useQuery();
-  console.log("current user", currentUser);
   const data = {
     unreadCount: 2,
   };

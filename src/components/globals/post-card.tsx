@@ -145,7 +145,10 @@ export function PostCard({
 
           <div className="flex flex-col">
             <div className="flex items-center gap-1 text-[15px] font-bold">
-              <UserHoverCard userId={userId} />
+              <UserHoverCard
+                initialName={creator.name ?? creator.username}
+                userId={userId}
+              />
               {" · "}
               <span className="text-muted-foreground">@{creator.username}</span>
             </div>

@@ -13,7 +13,6 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
   const {
     data,
     isFetchingNextPage,
-    hasNextPage,
     fetchNextPage,
     isLoading: isInitialLoading,
   } = api.post.getAllInfinitePosts.useInfiniteQuery(
@@ -38,8 +37,6 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
   if (data?.pages[0]?.posts.length === 0) {
     return <NoPostFound />;
   }
-
-  console.log("is has next", hasNextPage);
 
   return (
     <div className="flex flex-col gap-4">

@@ -30,6 +30,10 @@ export const authRouter = createTRPCRouter({
       where: {
         id: ctx.session.user.id,
       },
+      include: {
+        followings: true,
+        followers: true,
+      },
     });
   }),
 

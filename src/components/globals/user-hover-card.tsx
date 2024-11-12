@@ -11,7 +11,13 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 
-export function UserHoverCard({ userId }: { userId: string }) {
+export function UserHoverCard({
+  userId,
+  initialName,
+}: {
+  userId: string;
+  initialName: string | null;
+}) {
   const {
     data: user,
     isLoading,
@@ -21,7 +27,7 @@ export function UserHoverCard({ userId }: { userId: string }) {
       userId,
     },
     {
-      enabled: true,
+      enabled: false,
     },
   );
 
@@ -32,8 +38,11 @@ export function UserHoverCard({ userId }: { userId: string }) {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <div className="flex cursor-pointer items-center gap-1 hover:underline">
-          {user?.name ?? user?.username}
+        <div
+          onMouseEnter={() => refetch()}
+          className="flex cursor-pointer items-center gap-1 hover:underline"
+        >
+          {initialName}
           {user?.isVerified && (
             <span>
               <VerifiedIcon />
@@ -46,7 +55,7 @@ export function UserHoverCard({ userId }: { userId: string }) {
           <Avatar>
             <AvatarImage src={user?.image as string} />
             <AvatarFallback>
-              {getInitial(user?.username ?? (user?.name as string))}
+              {getInitial(user?.username ?? (user?.name as string) ?? "")}
             </AvatarFallback>
           </Avatar>
           <div className="space-y-1">
@@ -68,10 +77,10 @@ export function UserHoverCard({ userId }: { userId: string }) {
           <span className="text-muted-foreground">@{user?.username}</span>
           <div className="flex items-center gap-2">
             <h1 className="text-sm text-muted-foreground">
-              {user?.followers.length} followers
+              {user?.followings.length} followers
             </h1>
             <h1 className="text-sm text-muted-foreground">
-              {user?.followings.length} following
+              {user?.followers.length} following
             </h1>
           </div>
           <div>
