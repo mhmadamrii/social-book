@@ -23,6 +23,9 @@ export function UploadFile({
     onUploadBegin: () => {
       setIsUploading(true);
     },
+    onUploadError: (e) => {
+      alert(JSON.stringify(e));
+    },
   });
 
   const handleButtonClick = () => {
