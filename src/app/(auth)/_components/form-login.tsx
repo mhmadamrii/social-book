@@ -88,17 +88,6 @@ export function FormLogin() {
         <Button className={cn("flex w-full gap-2 transition-all")}>
           {isPending ? "Logging in..." : "Log in"}
         </Button>
-        <div className="flex w-full justify-center">
-          <Button
-            type="button"
-            onClick={() => signIn("discord")}
-            disabled={isPending}
-            className="inline-flex items-center rounded-2xl bg-[#5865F2] px-4 py-2 font-semibold text-white hover:bg-[#4752C4]"
-          >
-            <DiscordIcon />
-            {isPending ? "Loading..." : "Login with Discord"}
-          </Button>
-        </div>
       </form>
     </Form>
   );

@@ -1,12 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { GoogleSignInButton } from "../_components/google-button";
 import { FormLogin } from "../_components/form-login";
-import { auth } from "~/server/auth";
+import { DiscordButton } from "../_components/discord-button";
 
 export default async function Login() {
-  const session = await auth();
   return (
     <main className="flex h-screen items-center justify-center p-5">
       <div className="flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card bg-slate-900 shadow-2xl">
@@ -16,7 +14,7 @@ export default async function Login() {
             <span className="font-bold text-blue-500">Social Book</span>
           </h1>
           <div className="space-y-5">
-            <GoogleSignInButton />
+            <DiscordButton />
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-muted" />
               <span>OR</span>
