@@ -23,7 +23,7 @@ export function SearchUser() {
   });
 
   const filteredUsers = allUsers?.filter((user) =>
-    user!.username!.toLowerCase().includes(search.toLowerCase()),
+    user!.username!?.toLowerCase().includes(search?.toLowerCase()),
   );
 
   return (
