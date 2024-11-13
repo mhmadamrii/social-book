@@ -8,7 +8,7 @@ import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { api } from "~/trpc/react";
-import { useToast } from "~/hooks/use-toast";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { UploadFile } from "~/components/globals/upload-file";
 import { deleteFiles } from "~/lib/utapi";
@@ -17,7 +17,6 @@ import { extractHashtags } from "~/lib/utils";
 
 export function PostField() {
   const { data: currentUser } = api.auth.getCurrentUser.useQuery();
-  const { toast } = useToast();
 
   const router = useRouter();
   const utils = api.useUtils();
@@ -28,22 +27,16 @@ export function PostField() {
   const { mutate: createTrending } = api.trending.createTrending.useMutation();
 
   const { mutate, isPending } = api.post.create.useMutation({
-    onSuccess: async (res) => {
+    onSuccess: async () => {
       router.refresh();
       utils.post.invalidate();
       setPost("");
       setFile(null);
-      toast({
-        title: "Post Created",
-        description: "lorem ipsum",
-      });
+      toast.success("Post created!");
     },
     onError: (err) => {
       console.log(err);
-      toast({
-        title: "Error",
-        description: "lorem ipsum",
-      });
+      toast.error("Failed to create post");
     },
   });
 
@@ -97,6 +90,8 @@ export function PostField() {
               width={500}
               height={500}
               className="size-fit max-h-[30rem] rounded-2xl"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="
             />
             <div
               onClick={deletePreviewImage}

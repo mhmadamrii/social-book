@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -39,4 +41,9 @@ export function removeHashtags(input: string): string {
 
   // Return the modified string
   return result.trim(); // Trim to remove any leading or trailing whitespace
+}
+
+export function timeAgo(dateInput: string) {
+  const dateTimeAgo = moment(new Date(dateInput)).fromNow();
+  return dateTimeAgo;
 }

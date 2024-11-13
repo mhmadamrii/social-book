@@ -51,22 +51,23 @@ model VerificationToken {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
     password      String?
-    username      String?   @unique
-    email         String?   @unique
+    username      String?    @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
     bio           String?
-    isVerified    Boolean   @default(false)
+    isVerified    Boolean    @default(false)
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
     likes         Like[]
     comments      Comment[]
-    followings    Follow[]  @relation("Following")
-    followers     Follow[]  @relation("Follower")
+    followings    Follow[]   @relation("Following")
+    followers     Follow[]   @relation("Follower")
+    Bookmark      Bookmark[]
 }
 
 model Follow {
@@ -88,9 +89,10 @@ model Post {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    likes    Like[]
-    comments Comment[]
+    user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    likes     Like[]
+    comments  Comment[]
+    bookmarks Bookmark[]
 
     @@map("posts")
 }
@@ -125,4 +127,17 @@ model TrendingTopic {
     content   String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+}
+
+model Bookmark {
+    id        Int      @id @default(autoincrement())
+    userId    String
+    postId    Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id])
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@map("bookmarks")
 }

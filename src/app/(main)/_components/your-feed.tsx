@@ -42,23 +42,28 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
     <div className="flex flex-col gap-4">
       {data?.pages.map((page, pageIndex) => (
         <div key={pageIndex} className="flex flex-col gap-4">
-          {page?.posts?.map((item) => (
-            <PostCard
-              key={item.id}
-              createdAt={item.createdAt}
-              userId={item.userId}
-              id={item.id}
-              title={item.content}
-              likesCount={item._count.likes}
-              commentsCount={item._count.comments}
-              creator={item.user}
-              imageUrl={item.imageUrl}
-              isLikedByUser={item.likes.some(
-                (like) => like.userId === userId ?? false,
-              )}
-              isCurrentUserOwnedPost={item.userId === userId ?? false}
-            />
-          ))}
+          {page?.posts?.map((item) => {
+            return (
+              <PostCard
+                key={item.id}
+                createdAt={item.createdAt}
+                userId={item.userId}
+                id={item.id}
+                title={item.content}
+                likesCount={item._count.likes}
+                commentsCount={item._count.comments}
+                creator={item.user}
+                imageUrl={item.imageUrl}
+                isBookmarked={
+                  item.bookmarks.some((b) => b.userId === userId) ?? false
+                }
+                isLikedByUser={item.likes.some(
+                  (like) => like.userId === userId ?? false,
+                )}
+                isCurrentUserOwnedPost={item.userId === userId ?? false}
+              />
+            );
+          })}
         </div>
       ))}
       {isFetchingNextPage && <PostSkeleton count={3} />}

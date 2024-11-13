@@ -56,6 +56,12 @@ export const postRouter = createTRPCRouter({
               userId: true,
             },
           },
+          bookmarks: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
           comments: {
             select: {
               userId: true,

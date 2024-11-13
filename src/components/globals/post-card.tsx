@@ -5,9 +5,8 @@ import Image from "next/image";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Comments } from "./comments";
-import { toast } from "~/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { cn, extractHashtags, getInitial, removeHashtags } from "~/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { api } from "~/trpc/react";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -17,12 +16,19 @@ import { Separator } from "~/components/ui/separator";
 import { UserHoverCard } from "./user-hover-card";
 
 import {
+  cn,
+  extractHashtags,
+  getInitial,
+  removeHashtags,
+  timeAgo,
+} from "~/lib/utils";
+
+import {
   Ban,
   Bookmark,
   Flag,
   MessageCircleMore,
   MoreHorizontal,
-  MoreVertical,
   Trash,
 } from "lucide-react";
 
@@ -52,6 +58,8 @@ interface PostCardProps {
   isLikedByUser: boolean;
   imageUrl: string | null;
   isCurrentUserOwnedPost: boolean;
+  isBookmarked: boolean;
+  blurDataURL?: string;
   creator: {
     id: string;
     username: string | null;
@@ -65,11 +73,14 @@ export function PostCard({
   id,
   userId,
   creator,
+  createdAt,
   commentsCount,
   likesCount,
   isLikedByUser,
   imageUrl,
   isCurrentUserOwnedPost,
+  isBookmarked,
+  blurDataURL,
 }: PostCardProps) {
   const postHashtags = extractHashtags(title);
   const [isClick, setClick] = useState(false);
@@ -82,6 +93,20 @@ export function PostCard({
   const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation();
   const { mutate: increaseLikes } = api.post.increaseLikes.useMutation();
 
+  const { mutate: createBookmark } = api.bookmark.createBookmark.useMutation({
+    onSuccess: (res) => {
+      utils.post.invalidate();
+      toast.success("Post saved!");
+    },
+  });
+
+  const { mutate: deleteBookmark } = api.bookmark.deleteBookmark.useMutation({
+    onSuccess: (res) => {
+      utils.post.invalidate();
+      toast.success("Post removed!");
+    },
+  });
+
   const {
     mutate: deletePost,
     isPending: isPendingDeletePost,
@@ -89,10 +114,7 @@ export function PostCard({
   } = api.post.deletePost.useMutation({
     onSuccess: () => {
       utils.post.invalidate();
-      toast({
-        title: "Post Deleted",
-        description: "lorem ipsum",
-      });
+      toast.success("Post deleted!");
     },
   });
 
@@ -152,7 +174,9 @@ export function PostCard({
               {" · "}
               <span className="text-muted-foreground">@{creator.username}</span>
             </div>
-            <p className="text-[12px] text-muted-foreground">4 hours ago</p>
+            <p className="text-[12px] text-muted-foreground">
+              {timeAgo(createdAt as unknown as string)}
+            </p>
           </div>
         </div>
 
@@ -238,6 +262,9 @@ export function PostCard({
               width={500}
               height={500}
               className="size-fit max-h-[30rem] rounded-2xl"
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="
             />
           )}
         </div>
@@ -272,8 +299,26 @@ export function PostCard({
         </div>
 
         <div>
-          <div className="flex cursor-pointer items-center gap-2">
-            <Bookmark />
+          <div
+            onClick={() => {
+              if (isBookmarked) {
+                deleteBookmark({
+                  postId: id,
+                });
+              } else {
+                createBookmark({
+                  postId: id,
+                });
+              }
+            }}
+            className="flex cursor-pointer items-center gap-2"
+          >
+            <Bookmark
+              fill={isBookmarked ? "#3b82f6" : undefined}
+              className={cn("text-muted-foreground", {
+                "text-blue-500": isBookmarked,
+              })}
+            />
           </div>
         </div>
       </div>

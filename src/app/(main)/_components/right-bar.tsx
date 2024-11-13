@@ -5,7 +5,6 @@ import { LoadingSpinner } from "~/components/globals/loading-spinner";
 import { api } from "~/trpc/server";
 import { UserCard } from "./user-card";
 import { TrendingUp, UserPlus } from "lucide-react";
-import { Badge } from "~/components/ui/badge";
 import { SearchUser } from "~/components/globals/search-user";
 
 export function RightBar() {
@@ -62,13 +61,13 @@ async function TrendingTopics() {
       </div>
       <div className="flex flex-col gap-2">
         {trendings.slice(0, 3).map((item: any) => (
-          <div
-            key={item.hashtag}
-            className="flex items-center justify-between gap-2"
-          >
-            <Badge className="rounded-3xl bg-blue-500 text-sm font-medium">
+          <div key={item.hashtag} className="flex flex-col">
+            <Link
+              className="font-bold text-white hover:underline"
+              href={`/hashtag/${item.hashtag}`}
+            >
               {item?.hashtag}
-            </Badge>
+            </Link>
 
             <span className="text-sm text-muted-foreground">
               {item?.count} posts
