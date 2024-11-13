@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import { CalendarDays, Plus, PlusIcon } from "lucide-react";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Button } from "~/components/ui/button";
@@ -34,6 +36,8 @@ export function UserHoverCard({
   if (isLoading) {
     return <span>Loading..</span>;
   }
+
+  console.log("user", user);
 
   return (
     <HoverCard>
@@ -77,10 +81,10 @@ export function UserHoverCard({
           <span className="text-muted-foreground">@{user?.username}</span>
           <div className="flex items-center gap-2">
             <h1 className="text-sm text-muted-foreground">
-              {user?.followings.length} followers
+              {user?._count.followings} followers
             </h1>
             <h1 className="text-sm text-muted-foreground">
-              {user?.followers.length} following
+              {user?._count.followers} following
             </h1>
           </div>
           <div>
@@ -95,7 +99,7 @@ export function UserHoverCard({
           <div className="flex items-center pt-2">
             <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
             <span className="text-xs text-muted-foreground">
-              Joined December 2021
+              Joined {moment(user?.createdAt).format("DD MMMM YYYY")}
             </span>
           </div>
         </div>

@@ -40,13 +40,24 @@ export const authRouter = createTRPCRouter({
   getHoveredUser: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.user.findFirst({
+      return ctx.db.user.findUnique({
         where: {
           id: input.userId,
         },
-        include: {
-          followings: true,
-          followers: true,
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          image: true,
+          isVerified: true,
+          bio: true,
+          createdAt: true,
+          _count: {
+            select: {
+              followings: true,
+              followers: true,
+            },
+          },
         },
       });
     }),
