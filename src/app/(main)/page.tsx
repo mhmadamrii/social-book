@@ -13,8 +13,12 @@ export default async function Home() {
       <div className="w-full">
         <Tabs defaultValue="for-you">
           <TabsList>
-            <TabsTrigger value="for-you">For you</TabsTrigger>
-            <TabsTrigger value="following">Following</TabsTrigger>
+            <TabsTrigger value="for-you">
+              {session ? "For you" : "Posts"}
+            </TabsTrigger>
+            <TabsTrigger value="following">
+              {session ? "Following" : "Feed ✨"}
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="for-you">
             <YourFeed userId={session?.user.id} />

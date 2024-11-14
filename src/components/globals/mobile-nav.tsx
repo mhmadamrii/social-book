@@ -3,7 +3,8 @@
 import Link from "next/link";
 
 import { Bell, Bookmark, Home, Mail, MessageCircle } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { Button } from "../ui/button";
+import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { api } from "~/trpc/react";
 
@@ -94,6 +95,9 @@ function AutheticatedMobileNav() {
             <DrawerDescription>This action cannot be undone.</DrawerDescription>
           </DrawerHeader>
           <DrawerFooter>
+            <Button variant="destructive" onClick={() => signOut()}>
+              Logout
+            </Button>
             <DrawerClose>
               <span>Close</span>
             </DrawerClose>
