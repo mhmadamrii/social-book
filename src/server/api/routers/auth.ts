@@ -18,11 +18,6 @@ export const authRouter = createTRPCRouter({
         image: true,
         isVerified: true,
       },
-      where: {
-        id: {
-          not: ctx.session.user.id,
-        },
-      },
     });
   }),
 
@@ -115,6 +110,7 @@ export const authRouter = createTRPCRouter({
           username: input.username,
           email: input.email,
           password: input.password,
+          name: `${input.username}.social`,
         },
       });
     }),

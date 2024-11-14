@@ -79,4 +79,46 @@ export const followingRouter = createTRPCRouter({
 
     return sortedUsers;
   }),
+
+  getFollowedPosts: protectedProcedure
+    .input(z.object({ limit: z.number(), cursor: z.number().optional() }))
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit || 3;
+      const cursor = input.cursor; // Cursor from the previous request
+
+      const followedUsers = await ctx.db.follow.findMany({
+        where: {
+          followerId: ctx.session.user.id,
+        },
+        include: {
+          follower: true,
+        },
+      });
+      console.log("server", followedUsers);
+
+      const followedPosts = await ctx.db.post.findMany({
+        take: limit + 1, // Fetch one extra item to determine if there's a next page
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { createdAt: "desc" }, // Adjust based on your needs
+        where: {
+          userId: {
+            in: followedUsers.map((user) => user.followingId),
+          },
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      let nextCursor = null;
+      if (followedPosts.length > limit) {
+        const nextItem = followedPosts.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        followedPosts,
+        nextCursor,
+      };
+    }),
 });

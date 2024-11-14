@@ -192,7 +192,7 @@ export function PostCard({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
-                  <MoreHorizontal className="h-4 w-4 text-slate-900 group-hover:text-white" />
+                  <MoreHorizontal className="h-4 w-4 text-white group-hover:text-white sm:text-slate-900" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[90px]" align="end">
@@ -252,9 +252,9 @@ export function PostCard({
       <div className="flex flex-col gap-2">
         <p>{removeHashtags(title)}</p>
         <div className="flex flex-wrap gap-2">
-          {postHashtags.map((hashtag) => (
+          {postHashtags.map((hashtag, idx) => (
             <span
-              key={hashtag}
+              key={idx}
               className="cursor-pointer text-blue-500 hover:underline"
             >
               {hashtag}
