@@ -1,12 +1,35 @@
-export default function Notifications() {
+"use client";
+
+import React from "react";
+
+import { ReactionBarSelector } from "@charkour/react-reactions";
+import { Heart } from "lucide-react";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+
+export default function Notification() {
   return (
-    <section>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt at
-        atque architecto, in, possimus maxime quia, magnam nostrum quas quae
-        dolore rem facere saepe voluptates expedita soluta ipsa voluptatem
-        reiciendis.
-      </p>
-    </section>
+    <div className="w-full">
+      <div className="">
+        <Popover>
+          <PopoverTrigger>
+            <Heart />
+          </PopoverTrigger>
+          <PopoverContent className="right-0 w-auto border-none bg-transparent p-0">
+            <ReactionBarSelector
+              onSelect={(r) => console.log("r is", r)}
+              iconSize={20}
+              style={{
+                backgroundColor: "#0f172a",
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
   );
 }

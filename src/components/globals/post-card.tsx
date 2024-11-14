@@ -4,6 +4,7 @@ import Heart from "@react-sandbox/heart";
 import Image from "next/image";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { ReactionButton } from "./reaction";
 import { Comments } from "./comments";
 import { DialogOfferLogin } from "./dialog-offer-login";
 import { toast } from "sonner";
@@ -281,7 +282,7 @@ export function PostCard({
 
       <div className="flex w-full justify-between">
         <div className="flex items-center gap-4">
-          <div
+          {/* <div
             onClick={onClickLikeHandler}
             className="flex cursor-pointer items-center gap-2"
           >
@@ -294,15 +295,16 @@ export function PostCard({
               strokeWidth={60}
             />
             <h2 className="text-sm font-bold">{totalLikes || 0} Likes</h2>
-          </div>
+          </div> */}
+          <ReactionButton onClickReaction={(r: any) => console.log("r", r)} />
 
-          <div
+          {/* <div
             onClick={handleToggleComment}
             className="flex cursor-pointer items-center gap-1"
           >
             <MessageCircleMore className="text-muted-foreground" />
             <h2 className="text-sm font-bold">{commentsCount || 0} Comments</h2>
-          </div>
+          </div> */}
         </div>
 
         <div>
