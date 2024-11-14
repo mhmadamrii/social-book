@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 
-import { Bell, Bookmark, Home, Mail } from "lucide-react";
+import { Bell, Bookmark, Home, Mail, MessageCircle } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { api } from "~/trpc/react";
 
@@ -18,7 +19,18 @@ import {
 } from "~/components/ui/drawer";
 
 export function MobileNav() {
+  const session = useSession();
+
+  if (!session.data) {
+    return <UnAutheticatedMobileNav />;
+  }
+
+  return <AutheticatedMobileNav />;
+}
+
+function AutheticatedMobileNav() {
   const { data: currentUser } = api.auth.getCurrentUser.useQuery();
+
   const data = {
     unreadCount: 2,
   };
@@ -88,6 +100,36 @@ export function MobileNav() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+    </section>
+  );
+}
+
+function UnAutheticatedMobileNav() {
+  return (
+    <section className="sticky bottom-0 flex w-full justify-center gap-5 border-t bg-card p-3 sm:hidden">
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-1">
+          <MessageCircle className="h-8 w-8 text-blue-500" fill="#3b82f6" />
+          <h1 className="text-xl font-bold text-primary sm:text-2xl">
+            Social-Book
+          </h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link
+            className="flex w-[80px] items-center justify-center rounded-xl bg-blue-500 px-2 py-1 hover:bg-blue-500/90"
+            href="/login"
+          >
+            Login
+          </Link>
+
+          <Link
+            className="flex w-[80px] items-center justify-center rounded-xl bg-slate-500 px-2 py-1 hover:bg-slate-500/90"
+            href="/register"
+          >
+            Signup
+          </Link>
+        </div>
+      </div>
     </section>
   );
 }

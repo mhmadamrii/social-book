@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 
-import { Button } from "../ui/button";
-import { cn } from "~/lib/utils";
 import { useTheme } from "next-themes";
+import { signOut } from "next-auth/react";
 import { Check, LogOutIcon, Monitor, Moon, Sun, UserIcon } from "lucide-react";
 
 import {
@@ -19,7 +18,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { signOut } from "next-auth/react";
 
 export function UserButton() {
   const { theme, setTheme } = useTheme();

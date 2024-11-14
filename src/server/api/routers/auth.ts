@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -25,6 +26,31 @@ export const authRouter = createTRPCRouter({
     });
   }),
 
+  getPeopleYouMayKnow: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.user.findMany({
+      take: 3,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        image: true,
+        isVerified: true,
+        bio: true,
+        createdAt: true,
+        _count: {
+          select: {
+            followings: true,
+            followers: true,
+            posts: true,
+          },
+        },
+      },
+    });
+  }),
+
   getCurrentUser: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.user.findFirst({
       where: {
@@ -37,7 +63,7 @@ export const authRouter = createTRPCRouter({
     });
   }),
 
-  getHoveredUser: protectedProcedure
+  getHoveredUser: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.db.user.findUnique({

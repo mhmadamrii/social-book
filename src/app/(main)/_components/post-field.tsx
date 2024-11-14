@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { UploadFile } from "~/components/globals/upload-file";
 import { deleteFiles } from "~/lib/utapi";
 import { AnimateUpload } from "~/components/globals/animate-upload";
-import { extractHashtags } from "~/lib/utils";
+import { cn, extractHashtags } from "~/lib/utils";
 
 export function PostField() {
   const { data: currentUser } = api.auth.getCurrentUser.useQuery();
@@ -65,7 +65,11 @@ export function PostField() {
   };
 
   return (
-    <section className="mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4">
+    <section
+      className={cn(
+        "mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4",
+      )}
+    >
       <div className="flex items-start gap-3">
         <Avatar>
           <AvatarImage src={currentUser?.image as string} />

@@ -6,8 +6,16 @@ import { api } from "~/trpc/server";
 import { UserCard } from "./user-card";
 import { TrendingUp, UserPlus } from "lucide-react";
 import { SearchUser } from "~/components/globals/search-user";
+import { auth } from "~/server/auth";
+import { PeopleYouMayKnow } from "~/components/globals/people-you-may-know";
 
-export function RightBar() {
+export async function RightBar() {
+  const session = await auth();
+
+  if (!session) {
+    return <UnAuthenticatedRightBar />;
+  }
+
   return (
     <aside className="sticky top-[6rem] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
       <Suspense fallback={<LoadingSpinner />}>
@@ -76,5 +84,21 @@ async function TrendingTopics() {
         ))}
       </div>
     </div>
+  );
+}
+
+async function UnAuthenticatedRightBar() {
+  const peopleYouMayKnow = await api.auth.getPeopleYouMayKnow();
+  console.log("peopleYouMayKnow", peopleYouMayKnow);
+
+  return (
+    <aside className="sticky top-[6rem] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
+      <div className="space-y-3 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
+        <h1 className="text-xl font-bold">People you may know</h1>
+        {peopleYouMayKnow.map((user) => (
+          <PeopleYouMayKnow key={user.id} user={user} />
+        ))}
+      </div>
+    </aside>
   );
 }

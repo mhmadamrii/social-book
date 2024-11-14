@@ -6,9 +6,11 @@ import { useInView } from "react-intersection-observer";
 import { PostSkeleton } from "~/components/globals/post-skeleton";
 import { useEffect } from "react";
 import { NoPostFound } from "~/components/globals/no-post-found";
+import { useSession } from "next-auth/react";
 
 export function YourFeed({ userId }: { userId: string | undefined }) {
   const { ref, inView } = useInView();
+  const session = useSession();
 
   const {
     data,
@@ -45,6 +47,7 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
           {page?.posts?.map((item) => {
             return (
               <PostCard
+                session={session}
                 key={item.id}
                 createdAt={item.createdAt}
                 userId={item.userId}

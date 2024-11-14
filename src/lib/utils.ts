@@ -8,6 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getInitial(name: string): string | undefined {
+  if (!name) {
+    return "CN";
+  }
   // Trim whitespace and check if the name is empty
   const trimmedName = name.trim();
   if (trimmedName.length === 0) {

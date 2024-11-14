@@ -1,11 +1,9 @@
 import moment from "moment";
 
-import { CalendarDays, Plus, PlusIcon } from "lucide-react";
-import { VerifiedIcon } from "~/components/globals/verified-icon";
-import { Button } from "~/components/ui/button";
-import { api } from "~/trpc/react";
-import { getInitial } from "~/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { getInitial } from "~/lib/utils";
+import { VerifiedIcon } from "./verified-icon";
+import { CalendarDays } from "lucide-react";
 
 import {
   HoverCard,
@@ -13,45 +11,48 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 
-export function UserHoverCard({
-  userId,
-  initialName,
-}: {
-  userId: string;
-  initialName: string | null;
-}) {
-  const {
-    data: user,
-    isLoading,
-    refetch,
-  } = api.auth.getHoveredUser.useQuery(
-    {
-      userId,
-    },
-    {
-      enabled: false,
-    },
-  );
+interface PeopleYouMayKnowProps {
+  image: string | null;
+  id: string;
+  username: string | null;
+  name: string | null;
+  bio: string | null;
+  isVerified: boolean;
+  createdAt: Date;
+  _count: {
+    followings: number;
+    followers: number;
+    posts: number;
+  };
+}
+[];
 
-  if (isLoading) {
-    return <span>Loading..</span>;
-  }
-
+export function PeopleYouMayKnow({ user }: { user: PeopleYouMayKnowProps }) {
   return (
     <HoverCard>
-      <HoverCardTrigger asChild>
-        <div
-          onMouseEnter={() => refetch()}
-          className="flex cursor-pointer items-center gap-1 hover:underline"
-        >
-          {initialName}
-          {user?.isVerified && (
-            <span>
-              <VerifiedIcon />
+      <div className="flex items-center gap-2">
+        <Avatar>
+          <AvatarImage src={user?.image as string} />
+          <AvatarFallback>
+            {getInitial(user?.username ?? (user?.name as string) ?? "")}
+          </AvatarFallback>
+        </Avatar>
+        <HoverCardTrigger className="" asChild>
+          <div>
+            <div className="flex cursor-pointer items-center gap-1 hover:underline">
+              {user.name}
+              {user?.isVerified && (
+                <span>
+                  <VerifiedIcon />
+                </span>
+              )}
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {user._count.posts} posts
             </span>
-          )}
-        </div>
-      </HoverCardTrigger>
+          </div>
+        </HoverCardTrigger>
+      </div>
       <HoverCardContent className="flex w-72 flex-col gap-2">
         <div className="flex justify-between space-x-4">
           <Avatar>
@@ -60,12 +61,6 @@ export function UserHoverCard({
               {getInitial(user?.username ?? (user?.name as string) ?? "")}
             </AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
-            <Button className="flex items-center gap-1 rounded-2xl">
-              <PlusIcon />
-              Follow
-            </Button>
-          </div>
         </div>
         <div>
           <h1 className="flex cursor-pointer items-center gap-1">

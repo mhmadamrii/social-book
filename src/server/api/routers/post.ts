@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
   getAllPosts: protectedProcedure.query(async ({ ctx }) => {
@@ -38,7 +42,7 @@ export const postRouter = createTRPCRouter({
     });
   }),
 
-  getAllInfinitePosts: protectedProcedure
+  getAllInfinitePosts: publicProcedure
     .input(z.object({ limit: z.number(), cursor: z.number().optional() }))
     .query(async ({ ctx, input }) => {
       const limit = input.limit || 3;
@@ -46,7 +50,6 @@ export const postRouter = createTRPCRouter({
 
       const posts = await ctx.db.post.findMany({
         take: limit + 1, // Fetch one extra item to determine if there's a next page
-        // skip: cursor ? 1 : 0, // Skip the cursor if present
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { createdAt: "desc" }, // Adjust based on your needs
         include: {

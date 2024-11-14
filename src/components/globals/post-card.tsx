@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Comments } from "./comments";
+import { DialogOfferLogin } from "./dialog-offer-login";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { useEffect, useRef, useState } from "react";
@@ -60,6 +61,7 @@ interface PostCardProps {
   isCurrentUserOwnedPost: boolean;
   isBookmarked: boolean;
   blurDataURL?: string;
+  session: any;
   creator: {
     id: string;
     username: string | null;
@@ -80,9 +82,10 @@ export function PostCard({
   imageUrl,
   isCurrentUserOwnedPost,
   isBookmarked,
-  blurDataURL,
+  session,
 }: PostCardProps) {
   const postHashtags = extractHashtags(title);
+  const [isOpenDialogOfferLogin, setIsOpenDialogOfferLogin] = useState(false);
   const [isClick, setClick] = useState(false);
   const [isOpenComment, setIsOpenComment] = useState(false);
   const [totalLikes, setTotalLikes] = useState(likesCount);
@@ -131,6 +134,10 @@ export function PostCard({
   };
 
   const onClickLikeHandler = () => {
+    if (!session.data) {
+      setIsOpenDialogOfferLogin(true);
+      return;
+    }
     if (isLikedByUser) {
       decreaseLikes({ id: id });
       setTotalLikes((prev) => prev - 1);
@@ -314,7 +321,7 @@ export function PostCard({
             className="flex cursor-pointer items-center gap-2"
           >
             <Bookmark
-              fill={isBookmarked ? "#3b82f6" : undefined}
+              fill={isBookmarked ? "#3b82f6" : "#0f172a"}
               className={cn("text-muted-foreground", {
                 "text-blue-500": isBookmarked,
               })}
@@ -324,6 +331,10 @@ export function PostCard({
       </div>
 
       {isOpenComment && <Comments postId={id} commentRef={commentRef} />}
+      <DialogOfferLogin
+        isOpen={isOpenDialogOfferLogin}
+        onOpenChange={setIsOpenDialogOfferLogin}
+      />
     </section>
   );
 }
