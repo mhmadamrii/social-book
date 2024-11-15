@@ -1,4 +1,4 @@
-import { getInitial } from "~/lib/utils";
+import { getInitial, timeAgo } from "~/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
 
@@ -14,7 +14,12 @@ export function UserCommentCard({ userComment }: { userComment: any }) {
         </Avatar>
 
         <div>
-          <h1>{userComment?.user?.username ?? userComment.user.name}</h1>
+          <div className="flex items-center gap-2">
+            <h1>{userComment?.user?.username ?? userComment.user.name}</h1>
+            <span className="text-[12px] text-muted-foreground">
+              {timeAgo(userComment.createdAt as unknown as string)}
+            </span>
+          </div>
           <p>{userComment.content}</p>
         </div>
       </div>

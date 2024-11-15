@@ -68,8 +68,8 @@ async function TrendingTopics() {
         Trending Topics
       </div>
       <div className="flex flex-col gap-2">
-        {trendings.slice(0, 3).map((item: any) => (
-          <div key={item.hashtag} className="flex flex-col">
+        {trendings.slice(0, 3).map((item: any, idx: number) => (
+          <div key={idx} className="flex flex-col">
             <Link
               className="font-bold text-white hover:underline"
               href={`/hashtag/${item.hashtag}`}

@@ -6,8 +6,8 @@ import { extractHashtags, getInitial, removeHashtags } from "~/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Bookmark } from "lucide-react";
 import { api } from "~/trpc/react";
-import { toast } from "~/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function BookmarkCard({ item }: { item: any }) {
   const router = useRouter();
@@ -16,12 +16,9 @@ export function BookmarkCard({ item }: { item: any }) {
 
   const { mutate: deleteBookmark } = api.bookmark.deleteBookmark.useMutation({
     onSuccess: () => {
+      toast.success("Post removed!");
       utils.bookmark.invalidate();
       router.refresh();
-      toast({
-        title: "Bookmark removed",
-        description: "lorem ipsum",
-      });
     },
   });
 
@@ -58,9 +55,9 @@ export function BookmarkCard({ item }: { item: any }) {
         <div className="flex flex-col gap-2">
           <p>{removeHashtags(item?.post?.content as string)}</p>
           <div className="flex flex-wrap gap-2">
-            {postHashtags.map((hashtag) => (
+            {postHashtags.map((hashtag, idx) => (
               <span
-                key={hashtag}
+                key={idx}
                 className="cursor-pointer text-blue-500 hover:underline"
               >
                 {hashtag}

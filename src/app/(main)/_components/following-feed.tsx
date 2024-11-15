@@ -1,10 +1,11 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { ExternalLink } from "lucide-react";
 import { useEffect } from "react";
+import { api } from "~/trpc/react";
 import { useInView } from "react-intersection-observer";
 import { NoPostFound } from "~/components/globals/no-post-found";
 import { PostSkeleton } from "~/components/globals/post-skeleton";
@@ -12,6 +13,7 @@ import { UserHoverCard } from "~/components/globals/user-hover-card";
 import { UserSkeleton } from "~/components/globals/user-skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Separator } from "~/components/ui/separator";
+
 import {
   cn,
   extractHashtags,
@@ -19,7 +21,6 @@ import {
   removeHashtags,
   timeAgo,
 } from "~/lib/utils";
-import { api } from "~/trpc/react";
 
 export function FollowingFeed() {
   const { ref, inView } = useInView();
@@ -46,6 +47,11 @@ export function FollowingFeed() {
 
   if (isInitialLoading) {
     return <PostSkeleton count={3} />;
+  }
+
+  console.log(followedPosts);
+  if (followedPosts?.pages[0]?.followedPosts?.length === 0) {
+    return <NoPostFound />;
   }
 
   return (

@@ -3,6 +3,7 @@ import { PostField } from "./_components/post-field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { YourFeed } from "./_components/your-feed";
 import { FollowingFeed } from "./_components/following-feed";
+import { NoPostFound } from "~/components/globals/no-post-found";
 
 export default async function Home() {
   const session = await auth();
@@ -24,7 +25,7 @@ export default async function Home() {
             <YourFeed userId={session?.user.id} />
           </TabsContent>
           <TabsContent value="following">
-            <FollowingFeed />
+            {session ? <FollowingFeed /> : <NoPostFound />}
           </TabsContent>
         </Tabs>
       </div>

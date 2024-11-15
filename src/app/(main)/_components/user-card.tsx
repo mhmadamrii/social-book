@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -18,9 +19,13 @@ export function UserCard({
   isAlreadyFollowing: boolean;
 }) {
   const router = useRouter();
+  const utils = api.useUtils();
+
+  const [isFollowed, setIsFollowed] = useState(isAlreadyFollowing);
 
   const { mutate: follow, isPending } = api.following.followUser.useMutation({
     onSuccess: () => {
+      utils.following.invalidate();
       router.refresh();
     },
   });
@@ -28,6 +33,7 @@ export function UserCard({
   const { mutate: unfollow, isPending: isUnfollowing } =
     api.following.unfollowUser.useMutation({
       onSuccess: () => {
+        utils.following.invalidate();
         router.refresh();
       },
     });
@@ -61,14 +67,16 @@ export function UserCard({
 
         <div className="flex items-center">
           <Button
-            variant={isAlreadyFollowing ? "outline" : "default"}
+            variant={isFollowed ? "outline" : "default"}
             disabled={isPending || isUnfollowing}
             onClick={() => {
-              if (isAlreadyFollowing) {
+              if (isFollowed) {
+                setIsFollowed(false);
                 unfollow({
                   userId: user.id,
                 });
               } else {
+                setIsFollowed(true);
                 follow({
                   userId: user.id,
                 });
@@ -76,7 +84,7 @@ export function UserCard({
             }}
             className="rounded-xl"
           >
-            {isAlreadyFollowing ? "Unfollow" : "Follow"}
+            {isFollowed ? "Unfollow" : "Follow"}
           </Button>
         </div>
       </div>
