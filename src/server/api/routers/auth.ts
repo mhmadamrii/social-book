@@ -21,6 +21,19 @@ export const authRouter = createTRPCRouter({
     });
   }),
 
+  getAllSearchableUsers: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        image: true,
+        isVerified: true,
+      },
+    });
+  }),
+
   getPeopleYouMayKnow: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.user.findMany({
       take: 3,
@@ -77,6 +90,28 @@ export const authRouter = createTRPCRouter({
             select: {
               followings: true,
               followers: true,
+            },
+          },
+        },
+      });
+    }),
+
+  getUserByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.user.findFirst({
+        where: {
+          username: input.username,
+        },
+        include: {
+          followings: true,
+          followers: true,
+          posts: true,
+          _count: {
+            select: {
+              followings: true,
+              followers: true,
+              posts: true,
             },
           },
         },

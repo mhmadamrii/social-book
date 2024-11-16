@@ -1,4 +1,5 @@
 import moment from "moment";
+import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { getInitial } from "~/lib/utils";
@@ -63,14 +64,17 @@ export function PeopleYouMayKnow({ user }: { user: PeopleYouMayKnowProps }) {
           </Avatar>
         </div>
         <div>
-          <h1 className="flex cursor-pointer items-center gap-1">
-            <span className="hover:underline">{user?.name}</span>
+          <Link
+            href={`/u/${user.username}`}
+            className="flex w-full cursor-pointer items-center gap-1 truncate text-sm hover:underline"
+          >
+            {user.name ?? user?.username}
             {user?.isVerified && (
               <span>
                 <VerifiedIcon />
               </span>
             )}
-          </h1>
+          </Link>
           <span className="text-muted-foreground">@{user?.username}</span>
           <div className="flex items-center gap-2">
             <h1 className="text-sm text-muted-foreground">

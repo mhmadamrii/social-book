@@ -89,7 +89,6 @@ async function TrendingTopics() {
 
 async function UnAuthenticatedRightBar() {
   const peopleYouMayKnow = await api.auth.getPeopleYouMayKnow();
-  console.log("peopleYouMayKnow", peopleYouMayKnow);
 
   return (
     <aside className="sticky top-[6rem] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
@@ -98,6 +97,7 @@ async function UnAuthenticatedRightBar() {
         {peopleYouMayKnow.map((user) => (
           <PeopleYouMayKnow key={user.id} user={user} />
         ))}
+        <SearchUser />
       </div>
     </aside>
   );

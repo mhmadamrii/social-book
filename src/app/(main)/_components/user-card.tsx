@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
@@ -50,14 +51,17 @@ export function UserCard({
           </Avatar>
           <div className="flex flex-col">
             <div className="flex gap-2">
-              <h2 className="flex w-full items-center gap-1 truncate text-sm">
+              <Link
+                href={`/u/${user.username}`}
+                className="flex w-full cursor-pointer items-center gap-1 truncate text-sm hover:underline"
+              >
                 {user.name ?? user?.username}
                 {user?.isVerified && (
                   <span>
                     <VerifiedIcon />
                   </span>
                 )}
-              </h2>
+              </Link>
             </div>
             <p className="text-sm text-muted-foreground">
               {followersCount} followers

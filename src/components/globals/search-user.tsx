@@ -15,7 +15,8 @@ import {
 } from "~/components/ui/dialog";
 
 export function SearchUser() {
-  const { data: allUsers, isLoading } = api.auth.getAllUsers.useQuery();
+  const { data: allUsers, isLoading } =
+    api.auth.getAllSearchableUsers.useQuery();
 
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useQueryState("u", {

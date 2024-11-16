@@ -1,4 +1,5 @@
 import moment from "moment";
+import Link from "next/link";
 
 import { CalendarDays, Plus, PlusIcon } from "lucide-react";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
@@ -69,7 +70,9 @@ export function UserHoverCard({
         </div>
         <div>
           <h1 className="flex cursor-pointer items-center gap-1">
-            <span className="hover:underline">{user?.name}</span>
+            <Link href={`/u/${user?.username}`} className="hover:underline">
+              {user?.name}
+            </Link>
             {user?.isVerified && (
               <span>
                 <VerifiedIcon />
