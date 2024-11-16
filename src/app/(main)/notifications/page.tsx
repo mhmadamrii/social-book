@@ -1,35 +1,53 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
+import { Button } from "~/components/ui/button";
 
-import { ReactionBarSelector } from "@charkour/react-reactions";
-import { Heart } from "lucide-react";
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-
-export default function Notification() {
+export default function PostSectionOne() {
+  const [isOpenComment, setIsOpenComment] = useState(false);
   return (
-    <div className="w-full">
-      <div className="">
-        <Popover>
-          <PopoverTrigger>
-            <Heart />
-          </PopoverTrigger>
-          <PopoverContent className="right-0 w-auto border-none bg-transparent p-0">
-            <ReactionBarSelector
-              onSelect={(r) => console.log("r is", r)}
-              iconSize={20}
-              style={{
-                backgroundColor: "#0f172a",
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
+    <div className="flex w-full flex-col gap-4">
+      <section className="w-full">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-2 rounded-2xl bg-slate-900 px-6 py-4 text-white"
+          >
+            <h1>Posts{i}</h1>
+            <Button onClick={() => setIsOpenComment(true)}>Open comment</Button>
+            {isOpenComment && (
+              <div>
+                <h1 className="text-xl">Comment section</h1>
+              </div>
+            )}
+          </div>
+        ))}
+      </section>
+
+      <section>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <PostSectionTwo key={i} post={`Posts${i}`} />
+        ))}
+      </section>
+    </div>
+  );
+}
+
+function PostSectionTwo({ post }: { post: string }) {
+  const [isOpenComment, setIsOpenComment] = useState(false);
+
+  return (
+    <div>
+      <h1>{post}</h1>
+      <h1>Some new comment section</h1>
+      <Button onClick={() => setIsOpenComment(!isOpenComment)}>
+        Open comment
+      </Button>
+      {isOpenComment && (
+        <div>
+          <h1 className="text-xl">Comment section</h1>
+        </div>
+      )}
     </div>
   );
 }

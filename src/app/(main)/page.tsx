@@ -25,7 +25,11 @@ export default async function Home() {
             <YourFeed userId={session?.user.id} />
           </TabsContent>
           <TabsContent value="following">
-            {session ? <FollowingFeed /> : <NoPostFound />}
+            {session ? (
+              <FollowingFeed userId={session?.user?.id} />
+            ) : (
+              <NoPostFound />
+            )}
           </TabsContent>
         </Tabs>
       </div>

@@ -94,12 +94,11 @@ export const followingRouter = createTRPCRouter({
           follower: true,
         },
       });
-      console.log("server", followedUsers);
 
       const followedPosts = await ctx.db.post.findMany({
-        take: limit + 1, // Fetch one extra item to determine if there's a next page
+        take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { createdAt: "desc" }, // Adjust based on your needs
+        orderBy: { createdAt: "desc" },
         where: {
           userId: {
             in: followedUsers.map((user) => user.followingId),
@@ -107,6 +106,16 @@ export const followingRouter = createTRPCRouter({
         },
         include: {
           user: true,
+          likes: {
+            select: {
+              userId: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
       });
 

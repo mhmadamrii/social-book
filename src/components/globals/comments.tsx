@@ -13,6 +13,7 @@ interface CommentsProps {
 }
 
 export function Comments({ commentRef, postId }: CommentsProps) {
+  console.log("post id", postId);
   const utils = api.useUtils();
   const [comment, setComment] = useState("");
 
