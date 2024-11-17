@@ -186,7 +186,7 @@ export function PostCard({
             <Heart
               onClick={onClickLikeHandler}
               size={20}
-              fill={localIsLikedByUser ? "#ef4444" : ""}
+              fill={localIsLikedByUser ? "#ef4444" : "#0f172a"}
               className={cn("cursor-pointer text-muted-foreground", {
                 "text-red-500": localIsLikedByUser,
               })}

@@ -4,11 +4,14 @@ import { Dispatch, SetStateAction, useRef } from "react";
 import { useUploadThing } from "~/lib/uploadthing";
 import { Button } from "../ui/button";
 import { ImageIcon } from "lucide-react";
+import { cn } from "~/lib/utils";
 
 export function UploadFile({
   setFile,
+  file,
   setIsUploading,
 }: {
+  file: any;
   setFile: Dispatch<SetStateAction<any>>;
   setIsUploading: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -29,6 +32,9 @@ export function UploadFile({
   });
 
   const handleButtonClick = () => {
+    if (file) {
+      return;
+    }
     if (fileInputRef.current) {
       fileInputRef.current.click(); // Trigger the file input click
     }
@@ -52,12 +58,20 @@ export function UploadFile({
         accept="image/*"
         multiple
         onChange={handleFileChange}
-        style={{ display: "none" }} // Hide the input
+        style={{ display: "none" }}
       />
 
-      <Button variant="ghost" onClick={handleButtonClick}>
+      <div
+        className={cn(
+          "flex h-full cursor-pointer items-center rounded-lg px-3 py-2 hover:bg-slate-800",
+          {
+            "cursor-not-allowed": file,
+          },
+        )}
+        onClick={handleButtonClick}
+      >
         <ImageIcon className="text-primary" size={20} />
-      </Button>
+      </div>
     </div>
   );
 }

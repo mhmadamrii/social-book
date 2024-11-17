@@ -85,6 +85,8 @@ export const authRouter = createTRPCRouter({
           image: true,
           isVerified: true,
           bio: true,
+          followers: true,
+          followings: true,
           createdAt: true,
           _count: {
             select: {

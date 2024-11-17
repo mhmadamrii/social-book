@@ -53,6 +53,7 @@ export async function LeftBar() {
         <span className="hidden text-lg lg:inline">Messages</span>
       </Link>
       <Link
+        prefetch
         className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-800"
         href="/bookmarks"
       >

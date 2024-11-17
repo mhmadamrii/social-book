@@ -42,6 +42,18 @@ export const postRouter = createTRPCRouter({
     });
   }),
 
+  getPostsByHashtag: publicProcedure
+    .input(z.object({ hashtag: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.post.findMany({
+        where: {
+          content: {
+            contains: input.hashtag,
+          },
+        },
+      });
+    }),
+
   getAllInfinitePosts: publicProcedure
     .input(z.object({ limit: z.number(), cursor: z.number().optional() }))
     .query(async ({ ctx, input }) => {

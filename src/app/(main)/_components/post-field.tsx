@@ -106,8 +106,12 @@ export function PostField() {
           </>
         )}
       </div>
-      <div className="flex w-full justify-end gap-3 rounded-xl">
-        <UploadFile setIsUploading={setIsUploading} setFile={setFile} />
+      <div className="flex h-full w-full items-center justify-end gap-3 rounded-xl">
+        <UploadFile
+          setIsUploading={setIsUploading}
+          file={file}
+          setFile={setFile}
+        />
         <Button
           onClick={handleCreatePost}
           disabled={post === "" || isPending}

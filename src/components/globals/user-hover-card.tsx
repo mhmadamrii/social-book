@@ -2,10 +2,13 @@ import moment from "moment";
 import Link from "next/link";
 
 import { CalendarDays, Plus, PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
-import { getInitial } from "~/lib/utils";
+import { cn, getInitial } from "~/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 import {
@@ -21,6 +24,27 @@ export function UserHoverCard({
   userId: string;
   initialName: string | null;
 }) {
+  const router = useRouter();
+  const session = useSession();
+  const utils = api.useUtils();
+  const [isFollowed, setIsFollowed] = useState(false);
+
+  const { mutate: follow, isPending } = api.following.followUser.useMutation({
+    onSuccess: async () => {
+      router.refresh();
+      utils.following.invalidate();
+      utils.auth.invalidate();
+    },
+  });
+
+  const { mutate: unfollow } = api.following.unfollowUser.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      utils.following.invalidate();
+      utils.auth.invalidate();
+    },
+  });
+
   const {
     data: user,
     isLoading,
@@ -33,6 +57,31 @@ export function UserHoverCard({
       enabled: false,
     },
   );
+
+  const onClickFollowHandler = () => {
+    if (isFollowed) {
+      setIsFollowed(false);
+      unfollow({
+        userId: userId,
+      });
+    } else {
+      setIsFollowed(true);
+      follow({
+        userId: userId,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      const isAlreadyFollowings = user?.followings.some(
+        (u) => u.followingId === userId,
+      );
+      setIsFollowed(isAlreadyFollowings);
+    } else {
+      return;
+    }
+  }, [user]);
 
   if (isLoading) {
     return <span>Loading..</span>;
@@ -61,10 +110,18 @@ export function UserHoverCard({
               {getInitial(user?.username ?? (user?.name as string) ?? "")}
             </AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
-            <Button className="flex items-center gap-1 rounded-2xl">
-              <PlusIcon />
-              Follow
+          <div
+            className={cn("space-y-1", {
+              hidden: !session.data,
+            })}
+          >
+            <Button
+              variant={isFollowed ? "outline" : "default"}
+              className="flex items-center gap-1 rounded-2xl"
+              onClick={onClickFollowHandler}
+            >
+              {!isFollowed && <PlusIcon />}
+              {isFollowed ? "Unfollow" : "Follow"}
             </Button>
           </div>
         </div>

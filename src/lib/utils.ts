@@ -46,6 +46,11 @@ export function removeHashtags(input: string): string {
   return result.trim(); // Trim to remove any leading or trailing whitespace
 }
 
+export function removeHashtag(input: string): string {
+  // Use regex to remove the '#' at the beginning of the string, if present
+  return input.replace(/^#/, "");
+}
+
 export function timeAgo(dateInput: string) {
   const dateTimeAgo = moment(new Date(dateInput)).fromNow();
   return dateTimeAgo;
