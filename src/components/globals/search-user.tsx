@@ -2,6 +2,7 @@
 
 import { User2Icon } from "lucide-react";
 import { api } from "~/trpc/react";
+import { AnimateUpload } from "./animate-upload";
 import { Input } from "~/components/ui/input";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { useQueryState } from "nuqs";
@@ -9,19 +10,24 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
 
 export function SearchUser() {
-  const { data: allUsers, isLoading } =
-    api.auth.getAllSearchableUsers.useQuery();
-
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useQueryState("u", {
     defaultValue: "",
   });
+
+  const { data: allUsers, isLoading } = api.auth.getAllSearchableUsers.useQuery(
+    undefined,
+    {
+      enabled: isOpen,
+    },
+  );
 
   const filteredUsers = allUsers?.filter((user) =>
     user!.username!?.toLowerCase().includes(search?.toLowerCase()),
@@ -41,7 +47,6 @@ export function SearchUser() {
             Search Users
           </DialogTitle>
         </DialogHeader>
-        {isLoading && "Loading..."}
         <div className="grid gap-4 py-4">
           <Input
             placeholder="Search users..."
@@ -51,6 +56,11 @@ export function SearchUser() {
             }}
           />
           <ScrollArea className="h-[200px] w-full rounded-md border p-4">
+            {isLoading && (
+              <div className="mt-10">
+                <AnimateUpload />
+              </div>
+            )}
             {filteredUsers?.map((user) => (
               <div key={user.id} className="py-2">
                 {user.name ?? user.username} {" · "} @{user.username}
@@ -61,6 +71,7 @@ export function SearchUser() {
             )}
           </ScrollArea>
         </div>
+        <DialogDescription></DialogDescription>
       </DialogContent>
     </Dialog>
   );

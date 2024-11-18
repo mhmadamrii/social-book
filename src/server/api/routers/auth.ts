@@ -101,6 +101,15 @@ export const authRouter = createTRPCRouter({
   getUserByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
+      const userFollowers = await ctx.db.user.findMany({
+        where: {
+          username: input.username,
+        },
+        include: {
+          followers: true,
+        },
+      });
+
       return ctx.db.user.findFirst({
         where: {
           username: input.username,

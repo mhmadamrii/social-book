@@ -54,6 +54,66 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
+  getAllInfinitePostsByUsername: publicProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        cursor: z.number().optional(),
+        username: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit || 3;
+      const cursor = input.cursor;
+
+      const posts = await ctx.db.post.findMany({
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { createdAt: "desc" },
+        where: {
+          user: {
+            username: input.username,
+          },
+        },
+        include: {
+          user: true,
+          likes: {
+            select: {
+              userId: true,
+            },
+          },
+          bookmarks: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
+          comments: {
+            select: {
+              userId: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+        },
+      });
+
+      let nextCursor = null;
+      if (posts.length > limit) {
+        const nextItem = posts.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        posts,
+        nextCursor,
+      };
+    }),
+
   getAllInfinitePosts: publicProcedure
     .input(z.object({ limit: z.number(), cursor: z.number().optional() }))
     .query(async ({ ctx, input }) => {

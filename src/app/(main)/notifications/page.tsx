@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Button } from "~/components/ui/button";
 import { timeAgo } from "~/lib/utils";
+import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Separator } from "~/components/ui/separator";
 import { Suspense } from "react";
 import { AnimateLoad } from "~/components/globals/animate-load";
@@ -68,9 +69,18 @@ async function NotificationsServerData() {
             <div className="flex items-center gap-2">
               <div className="flex-shrink-0">{getIcon(item.type)}</div>
               <div>
-                <h1 className="text-lg">
+                <h1 className="flex items-center gap-1 text-lg">
                   {item.issuer?.name}{" "}
-                  <span className="lowercase">{item.type}s your post</span>
+                  {item.issuer?.isVerified && (
+                    <span>
+                      <VerifiedIcon />
+                    </span>
+                  )}
+                  <span className="lowercase">
+                    {item.type}s{" "}
+                    {item.type === "FOLLOW" ? "your account" : "your"}{" "}
+                    {item.type === "FOLLOW" ? "" : "post"}
+                  </span>
                 </h1>
                 <p className="text-[12px] text-muted-foreground">
                   {timeAgo(item?.createdAt as unknown as string)}

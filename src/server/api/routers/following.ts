@@ -30,12 +30,22 @@ export const followingRouter = createTRPCRouter({
   followUser: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.follow.create({
+      const followUser = await ctx.db.follow.create({
         data: {
           followerId: ctx.session.user.id, // The current user (follower)
           followingId: input.userId, // The user being followed
         },
       });
+
+      await ctx.db.notification.create({
+        data: {
+          recipientId: input.userId,
+          issuerId: ctx.session.user.id,
+          type: "FOLLOW",
+        },
+      });
+
+      return followUser;
     }),
 
   unfollowUser: protectedProcedure
