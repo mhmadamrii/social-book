@@ -73,7 +73,7 @@ async function TrendingTopics() {
           <div key={idx} className="flex flex-col">
             <Link
               className="font-bold text-white hover:underline"
-              href={`/p/${removeHashtag(item.hashtag)}`}
+              href={`/h/${removeHashtag(item.hashtag)}`}
             >
               {item?.hashtag}
             </Link>

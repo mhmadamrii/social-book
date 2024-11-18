@@ -97,7 +97,7 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
     } else {
       setLocalIsLikedByUser(true);
       setTotalLikes((prev) => prev + 1);
-      increaseLikes({ id: id });
+      increaseLikes({ id: id, postAuthor: item.id });
     }
   };
 
@@ -153,7 +153,7 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
         </div>
 
         <div>
-          <Link href={`/post/${item?.id}`}>
+          <Link href={`/p/${item?.id}`}>
             <ExternalLink className="h-5 w-5 text-muted-foreground hover:text-blue-500" />
           </Link>
         </div>
@@ -229,7 +229,9 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
           </div>
         </div>
       </div>
-      {isOpenComment && <Comments postId={item.id} commentRef={commentRef} />}
+      {isOpenComment && (
+        <Comments postId={item.id} creator={item.id} commentRef={commentRef} />
+      )}
     </div>
   );
 }

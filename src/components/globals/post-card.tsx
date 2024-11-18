@@ -143,7 +143,7 @@ export function PostCard({
     } else {
       setLocalIsLikedByUser(true);
       setTotalLikes((prev) => prev + 1);
-      increaseLikes({ id: id });
+      increaseLikes({ id: id, postAuthor: creator.id });
     }
   };
 
@@ -221,7 +221,9 @@ export function PostCard({
           </div>
         </div>
       </div>
-      {isOpenComment && <Comments postId={id} commentRef={commentRef} />}
+      {isOpenComment && (
+        <Comments postId={id} creator={creator} commentRef={commentRef} />
+      )}
       <DialogOfferLogin
         isOpen={isOpenDialogOfferLogin}
         onOpenChange={setIsOpenDialogOfferLogin}

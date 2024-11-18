@@ -1,18 +1,32 @@
+"use client";
+
 import Link from "next/link";
+
+import { api } from "~/trpc/react";
 import { Bell, Bookmark, Home, Mail } from "lucide-react";
-import { auth } from "~/server/auth";
+import { useSession } from "next-auth/react";
 
-export async function LeftBar() {
-  const session = await auth();
+export function LeftBar() {
+  const session = useSession();
 
-  if (!session) {
+  if (!session.data) {
     return <UnAutheticatedLeftBar />;
   }
+
+  return <AuthenticatedLeftBar />;
+}
+
+function AuthenticatedLeftBar() {
+  const { data: notifications } = api.post.getMyNotifications.useQuery(
+    undefined,
+    {
+      refetchInterval: 50000, // refetch for every 50 seconds
+    },
+  );
 
   const data = {
     unreadCount: 2,
   };
-
   return (
     <aside className="sticky top-[6rem] hidden h-fit flex-none space-y-3 rounded-2xl bg-card bg-slate-900 px-3 py-5 shadow-sm sm:block lg:px-5 xl:w-80">
       <Link
@@ -29,9 +43,9 @@ export async function LeftBar() {
       >
         <div className="relative">
           <Bell />
-          {!!data.unreadCount && (
+          {notifications?.unreadCount !== 0 && (
             <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1 text-xs font-medium tabular-nums text-primary-foreground">
-              {data.unreadCount}
+              {notifications?.unreadCount}
             </span>
           )}
         </div>
@@ -46,7 +60,7 @@ export async function LeftBar() {
           <Mail />
           {!!data.unreadCount && (
             <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1 text-xs font-medium tabular-nums text-primary-foreground">
-              {data.unreadCount}
+              {data?.unreadCount}
             </span>
           )}
         </div>

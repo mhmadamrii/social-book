@@ -128,14 +128,25 @@ export const postRouter = createTRPCRouter({
     }),
 
   increaseLikes: protectedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.number(), postAuthor: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.like.create({
+      const like = await ctx.db.like.create({
         data: {
           postId: input.id,
           userId: ctx.session.user.id,
         },
       });
+
+      await ctx.db.notification.create({
+        data: {
+          recipientId: input.postAuthor,
+          issuerId: ctx.session.user.id,
+          postId: input.id,
+          type: "LIKE",
+        },
+      });
+
+      return like;
     }),
 
   decreaseLikes: protectedProcedure
@@ -173,15 +184,32 @@ export const postRouter = createTRPCRouter({
     }),
 
   createComment: protectedProcedure
-    .input(z.object({ id: z.number(), content: z.string().min(1) }))
+    .input(
+      z.object({
+        id: z.number(),
+        content: z.string().min(1),
+        postAuthor: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.comment.create({
+      const comments = await ctx.db.comment.create({
         data: {
           postId: input.id,
           userId: ctx.session.user.id,
           content: input.content,
         },
       });
+
+      await ctx.db.notification.create({
+        data: {
+          recipientId: input.postAuthor,
+          issuerId: ctx.session.user.id,
+          type: "COMMENT",
+          postId: input.id,
+        },
+      });
+
+      return comments;
     }),
 
   deleteComment: protectedProcedure
@@ -193,4 +221,27 @@ export const postRouter = createTRPCRouter({
         },
       });
     }),
+
+  getMyNotifications: protectedProcedure.query(async ({ ctx }) => {
+    const notifications = await ctx.db.notification.findMany({
+      where: {
+        recipientId: ctx.session.user.id,
+        read: false,
+      },
+      include: {
+        recipient: true,
+        issuer: true,
+        post: true,
+      },
+    });
+
+    const unreadCount = await ctx.db.notification.count({
+      where: {
+        recipientId: ctx.session.user.id,
+        read: false,
+      },
+    });
+
+    return { notifications, unreadCount };
+  }),
 });

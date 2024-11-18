@@ -10,9 +10,10 @@ import { UserSkeleton } from "./user-skeleton";
 interface CommentsProps {
   postId: number;
   commentRef: RefObject<HTMLInputElement>;
+  creator: any;
 }
 
-export function Comments({ commentRef, postId }: CommentsProps) {
+export function Comments({ commentRef, postId, creator }: CommentsProps) {
   const utils = api.useUtils();
   const [comment, setComment] = useState("");
 
@@ -33,6 +34,7 @@ export function Comments({ commentRef, postId }: CommentsProps) {
     mutate({
       id: postId,
       content: comment,
+      postAuthor: creator?.id,
     });
   };
 

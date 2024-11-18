@@ -69,8 +69,11 @@ model User {
     followers     Follow[]   @relation("Follower")
     Bookmark      Bookmark[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt             DateTime       @default(now())
+    updatedAt             DateTime       @updatedAt
+    Notification          Notification[]
+    receivedNotifications Notification[] @relation("Recipient")
+    issuedNotifications   Notification[] @relation("Issuer")
 }
 
 model Follow {
@@ -92,10 +95,11 @@ model Post {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-    likes     Like[]
-    comments  Comment[]
-    bookmarks Bookmark[]
+    user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    likes        Like[]
+    comments     Comment[]
+    bookmarks    Bookmark[]
+    Notification Notification[]
 
     @@map("posts")
 }
@@ -143,4 +147,28 @@ model Bookmark {
     post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
     @@map("bookmarks")
+}
+
+model Notification {
+    id          String           @id @default(cuid())
+    recipientId String
+    recipient   User             @relation("Recipient", fields: [recipientId], references: [id], onDelete: Cascade)
+    issuerId    String
+    issuer      User             @relation("Issuer", fields: [issuerId], references: [id], onDelete: Cascade)
+    postId      Int?
+    post        Post?            @relation(fields: [postId], references: [id], onDelete: Cascade)
+    type        NotificationType
+    read        Boolean          @default(false)
+
+    createdAt DateTime @default(now())
+    User      User?    @relation(fields: [userId], references: [id])
+    userId    String?
+
+    @@map("notifications")
+}
+
+enum NotificationType {
+    LIKE
+    FOLLOW
+    COMMENT
 }

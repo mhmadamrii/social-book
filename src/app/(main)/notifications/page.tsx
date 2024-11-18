@@ -1,53 +1,108 @@
-"use client";
+import Link from "next/link";
 
-import { useState } from "react";
 import { Button } from "~/components/ui/button";
+import { timeAgo } from "~/lib/utils";
+import { Separator } from "~/components/ui/separator";
+import { Suspense } from "react";
+import { AnimateLoad } from "~/components/globals/animate-load";
+import { NoNotificationFound } from "~/components/globals/no-notification-found";
+import { api } from "~/trpc/server";
 
-export default function PostSectionOne() {
-  const [isOpenComment, setIsOpenComment] = useState(false);
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+
+import {
+  Heart,
+  MessageCircle,
+  UserPlus,
+  MoreHorizontal,
+  Check,
+  ArrowRight,
+} from "lucide-react";
+
+type NotificationType = "LIKE" | "COMMENT" | "FOLLOW";
+
+const getIcon = (type: NotificationType) => {
+  switch (type) {
+    case "LIKE":
+      return <Heart className="h-8 w-8 text-red-500" />;
+    case "COMMENT":
+      return <MessageCircle className="h-8 w-8 text-blue-500" />;
+    case "FOLLOW":
+      return <UserPlus className="h-8 w-8 text-green-500" />;
+  }
+};
+
+export default function Notifications() {
   return (
     <div className="flex w-full flex-col gap-4">
-      <section className="w-full">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-2 rounded-2xl bg-slate-900 px-6 py-4 text-white"
-          >
-            <h1>Posts{i}</h1>
-            <Button onClick={() => setIsOpenComment(true)}>Open comment</Button>
-            {isOpenComment && (
-              <div>
-                <h1 className="text-xl">Comment section</h1>
-              </div>
-            )}
-          </div>
-        ))}
-      </section>
-
-      <section>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <PostSectionTwo key={i} post={`Posts${i}`} />
-        ))}
-      </section>
+      <div className="rounded-2xl bg-slate-900 p-4">
+        <h1 className="text-center text-3xl font-bold">Notifications</h1>
+      </div>
+      <Suspense fallback={<AnimateLoad />}>
+        <NotificationsServerData />
+      </Suspense>
     </div>
   );
 }
 
-function PostSectionTwo({ post }: { post: string }) {
-  const [isOpenComment, setIsOpenComment] = useState(false);
+async function NotificationsServerData() {
+  const notifications = await api.post.getMyNotifications();
+
+  if (notifications.notifications.length === 0) {
+    return <NoNotificationFound />;
+  }
 
   return (
-    <div>
-      <h1>{post}</h1>
-      <h1>Some new comment section</h1>
-      <Button onClick={() => setIsOpenComment(!isOpenComment)}>
-        Open comment
-      </Button>
-      {isOpenComment && (
-        <div>
-          <h1 className="text-xl">Comment section</h1>
+    <div className="flex w-full flex-col gap-4 rounded-2xl bg-slate-900 p-4">
+      {notifications.notifications.map((item) => (
+        <div
+          key={item.id}
+          className="my-4 flex w-full flex-col justify-center gap-4 rounded-xl"
+        >
+          <div className="flex justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex-shrink-0">{getIcon(item.type)}</div>
+              <div>
+                <h1 className="text-lg">
+                  {item.issuer?.name}{" "}
+                  <span className="lowercase">{item.type}s your post</span>
+                </h1>
+                <p className="text-[12px] text-muted-foreground">
+                  {timeAgo(item?.createdAt as unknown as string)}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {!item.read && (
+                    <DropdownMenuItem>
+                      <Check className="mr-2 h-4 w-4" />
+                      <span>Mark as read</span>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem>
+                    <ArrowRight className="mr-2 h-4 w-4" />
+                    <span>Go to post</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+          <Separator />
         </div>
-      )}
+      ))}
     </div>
   );
 }
