@@ -35,7 +35,17 @@ export const bookmarkRouter = createTRPCRouter({
         userId: ctx.session.user.id,
       },
       include: {
-        post: true,
+        post: {
+          include: {
+            user: true,
+            _count: {
+              select: {
+                likes: true,
+                comments: true,
+              },
+            },
+          },
+        },
         user: true,
       },
     });

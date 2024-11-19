@@ -1,5 +1,5 @@
 import moment from "moment";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { getInitial } from "~/lib/utils";

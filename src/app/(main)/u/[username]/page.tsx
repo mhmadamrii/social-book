@@ -39,10 +39,7 @@ async function UserWithServerData({ username }: { username: string }) {
       <CardHeader className="relative px-4 pt-2 sm:px-6">
         <div className="-mt-12 flex flex-col items-center gap-4 sm:-mt-16 sm:flex-row">
           <Avatar className="h-24 w-24 border-4 border-background">
-            <AvatarImage
-              src="/placeholder.svg?height=96&width=96"
-              alt="User avatar"
-            />
+            <AvatarImage src={user?.image as string} alt="User avatar" />
             <AvatarFallback className="text-5xl font-bold">
               {getInitial(user?.username ?? (user?.name as string))}
             </AvatarFallback>

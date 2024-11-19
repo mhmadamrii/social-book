@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 import { Bookmark, ExternalLink, Heart, MessageCircle } from "lucide-react";
 import { Comments } from "~/components/globals/comments";

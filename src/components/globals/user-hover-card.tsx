@@ -1,5 +1,5 @@
 import moment from "moment";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 import { CalendarDays, Plus, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";

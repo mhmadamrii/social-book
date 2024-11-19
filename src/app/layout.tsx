@@ -3,6 +3,7 @@ import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
+import { ViewTransitions } from "next-view-transitions";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import { SessionWrapper } from "~/components/globals/session-wrapper";
@@ -26,21 +27,21 @@ export default function RootLayout({
     >
       <body>
         <SessionWrapper>
-          <TRPCReactProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Toaster richColors position="top-center" />
-              <NuqsAdapter>{children}</NuqsAdapter>
-            </ThemeProvider>
-          </TRPCReactProvider>
+          <ViewTransitions>
+            <TRPCReactProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Toaster richColors position="top-center" />
+                <NuqsAdapter>{children}</NuqsAdapter>
+              </ThemeProvider>
+            </TRPCReactProvider>
+          </ViewTransitions>
         </SessionWrapper>
       </body>
     </html>
   );
 }
-
-// https://github.com/codinginflow/nextjs-15-social-media-app

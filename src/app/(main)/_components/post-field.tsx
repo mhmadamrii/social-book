@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { UploadFile } from "~/components/globals/upload-file";
 import { deleteFiles } from "~/lib/utapi";
 import { AnimateUpload } from "~/components/globals/animate-upload";
-import { cn, extractHashtags } from "~/lib/utils";
+import { cn, extractHashtags, getInitial } from "~/lib/utils";
 
 export function PostField() {
   const { data: currentUser } = api.auth.getCurrentUser.useQuery();
@@ -73,7 +73,9 @@ export function PostField() {
       <div className="flex items-start gap-3">
         <Avatar>
           <AvatarImage src={currentUser?.image as string} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>
+            {getInitial(currentUser?.name as string)}
+          </AvatarFallback>
         </Avatar>
 
         <Textarea

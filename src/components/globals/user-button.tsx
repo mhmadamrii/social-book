@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";

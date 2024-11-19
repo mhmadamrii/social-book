@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 import { api } from "~/trpc/react";
 import { Bell, Bookmark, Home, Mail } from "lucide-react";

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 import { Bell, Bookmark, Home, Mail, MessageCircle } from "lucide-react";
 import { Button } from "../ui/button";
