@@ -2,19 +2,14 @@ import { Link } from "next-view-transitions";
 
 import { Button } from "~/components/ui/button";
 import { timeAgo } from "~/lib/utils";
+import { NotifMenu } from "./_components/notif-menu";
+import { NotificationSkeleton } from "~/components/globals/notification-skeleton";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Separator } from "~/components/ui/separator";
 import { Suspense } from "react";
 import { AnimateLoad } from "~/components/globals/animate-load";
 import { NoNotificationFound } from "~/components/globals/no-notification-found";
 import { api } from "~/trpc/server";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 
 import {
   Heart,
@@ -44,7 +39,13 @@ export default function Notifications() {
       <div className="rounded-2xl bg-slate-900 p-4">
         <h1 className="text-center text-3xl font-bold">Notifications</h1>
       </div>
-      <Suspense fallback={<AnimateLoad />}>
+      <Suspense
+        fallback={
+          <section className="w-full rounded-2xl bg-slate-900 p-4">
+            <NotificationSkeleton count={7} />
+          </section>
+        }
+      >
         <NotificationsServerData />
       </Suspense>
     </div>
@@ -88,27 +89,7 @@ async function NotificationsServerData() {
               </div>
             </div>
 
-            <div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {!item.read && (
-                    <DropdownMenuItem>
-                      <Check className="mr-2 h-4 w-4" />
-                      <span>Mark as read</span>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem>
-                    <ArrowRight className="mr-2 h-4 w-4" />
-                    <span>Go to post</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <NotifMenu item={item} />
           </div>
           <Separator />
         </div>

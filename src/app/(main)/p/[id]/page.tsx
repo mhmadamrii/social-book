@@ -18,7 +18,6 @@ async function PostDetailWithServerData({ id }: { id: string }) {
   const post = await api.post.getPostDetailById({
     id: parseInt(id),
   });
-  console.log("post", post);
 
   if (!post) {
     return <NoPostFound />;

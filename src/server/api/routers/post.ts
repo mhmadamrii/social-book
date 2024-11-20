@@ -77,6 +77,16 @@ export const postRouter = createTRPCRouter({
           comments: {
             select: {
               userId: true,
+              content: true,
+              createdAt: true,
+              user: {
+                select: {
+                  username: true,
+                  image: true,
+                  name: true,
+                  isVerified: true,
+                },
+              },
             },
           },
           _count: {
@@ -339,4 +349,17 @@ export const postRouter = createTRPCRouter({
 
     return { notifications, unreadCount };
   }),
+
+  markAsRead: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.notification.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          read: true,
+        },
+      });
+    }),
 });

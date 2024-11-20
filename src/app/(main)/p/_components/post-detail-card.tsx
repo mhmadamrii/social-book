@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { UserHoverCard } from "~/components/globals/user-hover-card";
+import { api } from "~/trpc/react";
 import { CommentDetailCard } from "./comment-detail-card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -45,15 +46,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
+import { useSession } from "next-auth/react";
+import { DialogOfferLogin } from "~/components/globals/dialog-offer-login";
+import { toast } from "sonner";
 
 export function PostDetailCard({ post }: { post: any }) {
+  const session = useSession();
+  console.log("session", session);
+
   return (
     <>
       <section className="group mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4">
         <PostHeader creator={post?.user} createdAt={post?.createdAt} />
         <PostContent imageUrl={post?.imageUrl} title={post?.content} />
         <Separator />
-        <PostFooter />
+        <PostFooter post={post} session={session} />
+      </section>
+      <section className="rounded-2xl bg-slate-900 px-4 py-4">
+        <h1 className="text-center text-3xl font-bold">Comments</h1>
       </section>
 
       <CommentDetailCard post={post} />
@@ -195,19 +205,76 @@ const PostContent = ({
   );
 };
 
-const PostFooter = () => {
-  const [localIsLikedByUser, setLocalIsLikedByUser] = useState(false);
-  const totalLikes = 0;
+const PostFooter = ({ post, session }: { post: any; session: any }) => {
+  console.log("post", post);
+  const utils = api.useUtils();
+
+  const [isBookmarked, setIsBookmarked] = useState(
+    post?.bookmarks?.some(
+      (b: any) => b.userId === session?.data?.user?.id ?? false,
+    ) ?? false,
+  );
+  const [totalLikes, setTotalLikes] = useState<number>(
+    post?._count?.likes ?? 0,
+  );
+  const [isClick, setClick] = useState(
+    post?.likes.some(
+      (like: any) => like.userId === session?.data?.user?.id ?? false,
+    ),
+  );
+  const [isOpenDialogOfferLogin, setIsOpenDialogOfferLogin] = useState(false);
   const commentsCount = 0;
-  const isBookmarked = false;
+
+  const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation({
+    onSuccess: () => utils.post.invalidate(),
+  });
+
+  const { mutate: increaseLikes } = api.post.increaseLikes.useMutation({
+    onSuccess: () => utils.post.invalidate(),
+  });
+
+  const { mutate: createBookmark } = api.bookmark.createBookmark.useMutation({
+    onSuccess: (res) => {
+      utils.post.invalidate();
+      toast.success("Post saved!");
+    },
+  });
+
+  const { mutate: deleteBookmark } = api.bookmark.deleteBookmark.useMutation({
+    onSuccess: (res) => {
+      utils.post.invalidate();
+      toast.success("Bookmark removed!");
+    },
+  });
 
   const onClickLikeHandler = () => {
-    return;
+    if (!session.data) {
+      setIsOpenDialogOfferLogin(true);
+      return;
+    }
+    setClick(!isClick);
+    if (isClick) {
+      setTotalLikes((prev) => prev - 1);
+      decreaseLikes({ id: post.id });
+    } else {
+      setTotalLikes((prev) => prev + 1);
+      increaseLikes({ id: post.id, postAuthor: post?.user?.id });
+    }
   };
 
   const onClickBookmarkHandler = () => {
-    return;
+    setIsBookmarked((prev) => !prev);
+    if (isBookmarked) {
+      deleteBookmark({
+        postId: post.id,
+      });
+    } else {
+      createBookmark({
+        postId: post.id,
+      });
+    }
   };
+
   return (
     <div className="flex w-full items-center justify-between">
       <div className="flex items-center gap-4">
@@ -215,9 +282,9 @@ const PostFooter = () => {
           <Heart
             onClick={onClickLikeHandler}
             size={20}
-            fill={localIsLikedByUser ? "#ef4444" : "#0f172a"}
+            fill={isClick ? "#ef4444" : "#0f172a"}
             className={cn("cursor-pointer text-muted-foreground", {
-              "text-red-500": localIsLikedByUser,
+              "text-red-500": isClick,
             })}
           />
           <span className="text-sm text-muted-foreground">{totalLikes}</span>
@@ -246,6 +313,10 @@ const PostFooter = () => {
           />
         </div>
       </div>
+      <DialogOfferLogin
+        isOpen={isOpenDialogOfferLogin}
+        onOpenChange={setIsOpenDialogOfferLogin}
+      />
     </div>
   );
 };

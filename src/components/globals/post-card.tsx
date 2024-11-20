@@ -28,7 +28,6 @@ import {
   Ban,
   Bookmark,
   Flag,
-  HeartCrack,
   Heart,
   MoreHorizontal,
   Trash,
