@@ -13,7 +13,6 @@ import { Comments } from "./comments";
 import { Link } from "next-view-transitions";
 
 export function BookmarkCard({ item }: { item: any }) {
-  console.log("item", item);
   const router = useRouter();
   const postHashtags = extractHashtags(item?.post?.content as string);
   const utils = api.useUtils();

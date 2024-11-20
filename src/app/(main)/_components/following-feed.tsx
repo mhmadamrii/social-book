@@ -72,8 +72,12 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
   const utils = api.useUtils();
   const commentRef = useRef<HTMLInputElement>(null);
   const [isOpenComment, setIsOpenComment] = useState(false);
-  const [totalLikes, setTotalLikes] = useState(0);
-  const [localIsLikedByUser, setLocalIsLikedByUser] = useState(false);
+  const [totalLikes, setTotalLikes] = useState<number>(
+    item?._count?.likes ?? 0,
+  );
+  const [localIsLikedByUser, setLocalIsLikedByUser] = useState(
+    item.likes.some((like: any) => like.userId === userId ?? false),
+  );
 
   const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation({
     onSuccess: () => utils.following.invalidate(),
@@ -83,21 +87,15 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
     onSuccess: () => utils.following.invalidate(),
   });
 
-  const onClickLikeHandler = ({
-    id,
-    isLikedByUser,
-  }: {
-    id: number;
-    isLikedByUser: boolean;
-  }) => {
-    if (isLikedByUser) {
+  const onClickLikeHandler = ({ id }: { id: number }) => {
+    if (localIsLikedByUser) {
       setLocalIsLikedByUser(false);
       setTotalLikes((prev) => prev - 1);
       decreaseLikes({ id: id });
     } else {
       setLocalIsLikedByUser(true);
       setTotalLikes((prev) => prev + 1);
-      increaseLikes({ id: id, postAuthor: item.id });
+      increaseLikes({ id: id, postAuthor: item?.user?.id });
     }
   };
 
@@ -115,9 +113,6 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
 
   const isBookmarked = false;
   const postHashtags = extractHashtags(item.content);
-  const isLikedByUser = item.likes.some(
-    (like: any) => like.userId === userId ?? false,
-  );
 
   return (
     <div
@@ -190,13 +185,11 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Heart
-              onClick={() =>
-                onClickLikeHandler({ id: item?.id, isLikedByUser })
-              }
+              onClick={() => onClickLikeHandler({ id: item?.id })}
               size={20}
-              fill={isLikedByUser ? "#ef4444" : ""}
+              fill={localIsLikedByUser ? "#ef4444" : ""}
               className={cn("cursor-pointer text-muted-foreground", {
-                "text-red-500": isLikedByUser,
+                "text-red-500": localIsLikedByUser,
               })}
             />
             <span className="text-sm text-muted-foreground">
@@ -210,7 +203,9 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
               size={20}
               className={cn("cursor-pointer text-muted-foreground")}
             />
-            <span className="text-sm text-muted-foreground">{0}</span>
+            <span className="text-sm text-muted-foreground">
+              {item?._count.comments}
+            </span>
           </div>
         </div>
 
@@ -230,7 +225,11 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
         </div>
       </div>
       {isOpenComment && (
-        <Comments postId={item.id} creator={item.id} commentRef={commentRef} />
+        <Comments
+          postId={item.id}
+          creator={item?.user}
+          commentRef={commentRef}
+        />
       )}
     </div>
   );

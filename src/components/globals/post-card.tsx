@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { useTransitionRouter } from "next-view-transitions";
 import { Comments } from "./comments";
 import { DialogOfferLogin } from "./dialog-offer-login";
 import { toast } from "sonner";
@@ -32,6 +33,7 @@ import {
   MoreHorizontal,
   Trash,
   MessageCircle,
+  ExternalLink,
 } from "lucide-react";
 
 import {
@@ -246,6 +248,7 @@ const PostHeader = ({
   id: number;
 }) => {
   const utils = api.useUtils();
+  const router = useTransitionRouter();
 
   const { mutate } = api.post.deletePost.useMutation({
     onSuccess: () => {
@@ -304,6 +307,16 @@ const PostHeader = ({
                 <Flag className="mr-2 h-4 w-4" />
                 <DialogTrigger>
                   <span>Report</span>
+                </DialogTrigger>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  router.push(`/p/${id}`);
+                }}
+              >
+                <ExternalLink className="mr-2 h-4 w-4" />
+                <DialogTrigger>
+                  <span>Detail</span>
                 </DialogTrigger>
               </DropdownMenuItem>
             </DropdownMenuContent>

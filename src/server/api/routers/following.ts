@@ -124,6 +124,7 @@ export const followingRouter = createTRPCRouter({
           _count: {
             select: {
               likes: true,
+              comments: true,
             },
           },
         },

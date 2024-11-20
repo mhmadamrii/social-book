@@ -16,13 +16,14 @@ interface CommentsProps {
 export function Comments({ commentRef, postId, creator }: CommentsProps) {
   const utils = api.useUtils();
   const [comment, setComment] = useState("");
+  console.log("comment", comment);
 
   const { data: comments, isLoading } = api.post.getAllComments.useQuery({
     postId: postId,
   });
 
   const { mutate, isPending } = api.post.createComment.useMutation({
-    onSuccess: () => {
+    onSuccess: (res) => {
       utils.post.invalidate();
       commentRef.current?.focus();
       setComment("");
