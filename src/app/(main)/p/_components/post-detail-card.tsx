@@ -263,7 +263,7 @@ const PostFooter = ({ post, session }: { post: any; session: any }) => {
   };
 
   const onClickBookmarkHandler = () => {
-    setIsBookmarked((prev) => !prev);
+    setIsBookmarked((prev: boolean) => !prev);
     if (isBookmarked) {
       deleteBookmark({
         postId: post.id,

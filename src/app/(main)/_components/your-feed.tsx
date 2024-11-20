@@ -43,7 +43,7 @@ export function YourFeed({ userId }: { userId: string | undefined }) {
   return (
     <div className="flex flex-col gap-4">
       {data?.pages.map((page, pageIndex) => (
-        <div key={pageIndex} className="flex flex-col gap-4">
+        <div key={pageIndex} className="flex flex-col gap-2">
           {page?.posts?.map((item) => {
             return (
               <PostCard

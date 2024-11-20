@@ -55,7 +55,7 @@ export function FollowingFeed({ userId }: { userId: any }) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       {followedPosts?.pages?.map((page, pageIdx) => (
         <div className="flex flex-col gap-2" key={pageIdx}>
           {page?.followedPosts?.map((item) => (

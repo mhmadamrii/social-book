@@ -5,6 +5,7 @@ import { Link } from "next-view-transitions";
 import { api } from "~/trpc/react";
 import { Bell, Bookmark, Home, Mail } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { AppIcon } from "./app-icon";
 
 export function LeftBar() {
   const session = useSession();
@@ -82,7 +83,8 @@ function UnAutheticatedLeftBar() {
   return (
     <aside className="sticky top-[6rem] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
       <div className="space-y-3 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
-        <div>
+        <div className="flex items-center gap-1">
+          <AppIcon />
           <h1 className="text-xl font-bold">Join the conversation</h1>
         </div>
         <div className="flex gap-2">
