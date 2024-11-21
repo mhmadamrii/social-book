@@ -5,9 +5,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Button } from "~/components/ui/button";
+import { GetCurrentUserType, GetUserByUsernameType } from "~/server/tRPCtypes";
 import { api } from "~/trpc/react";
 
-export function FollowUser({ user }: { user: any }) {
+export function FollowUser({
+  user,
+  currentUser,
+}: {
+  user: GetUserByUsernameType;
+  currentUser: GetCurrentUserType;
+}) {
   const session = useSession();
   const router = useRouter();
   const utils = api.useUtils();
@@ -34,7 +41,7 @@ export function FollowUser({ user }: { user: any }) {
       <div className="mt-2 space-y-1 text-center sm:mt-0 sm:text-left">
         <h2 className="flex items-center gap-1 text-xl font-bold">
           {user?.name}
-          {!user?.isVerified && (
+          {user?.isVerified && (
             <span>
               <VerifiedIcon />
             </span>
@@ -50,12 +57,12 @@ export function FollowUser({ user }: { user: any }) {
           if (isFollowed) {
             setIsFollowed(false);
             unfollow({
-              userId: user.id,
+              userId: user!.id,
             });
           } else {
             setIsFollowed(true);
             follow({
-              userId: user.id,
+              userId: user?.id as string,
             });
           }
         }}

@@ -1,13 +1,11 @@
 import moment from "moment";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Suspense } from "react";
 import { AnimateLoad } from "~/components/globals/animate-load";
 import { CalendarIcon, Users2Icon } from "lucide-react";
 import { getInitial } from "~/lib/utils";
 import { api } from "~/trpc/server";
-import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { UserDetailPosts } from "../_components/user-detail-posts";
 import { FollowUser } from "../_components/follow-user";
@@ -29,9 +27,12 @@ export default function User({ params }: { params: { username: string } }) {
 }
 
 async function UserWithServerData({ username }: { username: string }) {
-  const user = await api.auth.getUserByUsername({
-    username,
-  });
+  const [user, currentUser] = await Promise.all([
+    api.auth.getUserByUsername({
+      username,
+    }),
+    api.auth.getCurrentUser(),
+  ]);
 
   return (
     <Card className="group mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 pb-4">
@@ -47,7 +48,7 @@ async function UserWithServerData({ username }: { username: string }) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4 px-4 sm:px-6">
-        <FollowUser user={user} />
+        <FollowUser currentUser={currentUser} user={user} />
         <div className="flex flex-wrap justify-between gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Users2Icon className="h-4 w-4" />

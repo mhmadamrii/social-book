@@ -4,11 +4,17 @@ import { NoPostFound } from "~/components/globals/no-post-found";
 import { api } from "~/trpc/server";
 import { PostDetailCard } from "../_components/post-detail-card";
 
-export default function PostDetail({ params }: { params: { id: string } }) {
+export default async function PostDetail({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = await params;
+
   return (
     <div className="flex w-full flex-col gap-4">
       <Suspense fallback={<AnimateLoad />}>
-        <PostDetailWithServerData id={params?.id} />
+        <PostDetailWithServerData id={id} />
       </Suspense>
     </div>
   );

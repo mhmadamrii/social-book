@@ -3,6 +3,7 @@
 import { ArrowRight, Check, MoreHorizontal } from "lucide-react";
 import { api } from "~/trpc/react";
 import { toast } from "sonner";
+import { NotificationsType } from "~/server/tRPCtypes";
 import { Link, useTransitionRouter } from "next-view-transitions";
 import { Button } from "~/components/ui/button";
 
@@ -13,7 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-export function NotifMenu({ item }: { item: any }) {
+type _NotificationType = NotificationsType["notifications"][number];
+
+export function NotifMenu({ item }: { item: _NotificationType }) {
   const utils = api.useUtils();
   const router = useTransitionRouter();
 
@@ -46,7 +49,11 @@ export function NotifMenu({ item }: { item: any }) {
           )}
           <DropdownMenuItem>
             <ArrowRight className="mr-2 h-4 w-4" />
-            <Link href={`/p/${item.postId}`}>Go to post</Link>
+            {item.type === "FOLLOW" ? (
+              <Link href={`/u/${item.issuer?.username}`}>Go to user</Link>
+            ) : (
+              <Link href={`/p/${item.postId}`}>Go to post</Link>
+            )}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

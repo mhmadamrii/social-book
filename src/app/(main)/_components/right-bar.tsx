@@ -1,5 +1,4 @@
 import { Link } from "next-view-transitions";
-
 import { Suspense } from "react";
 import { LoadingSpinner } from "~/components/globals/loading-spinner";
 import { api } from "~/trpc/server";
@@ -9,6 +8,11 @@ import { SearchUser } from "~/components/globals/search-user";
 import { auth } from "~/server/auth";
 import { PeopleYouMayKnow } from "~/components/globals/people-you-may-know";
 import { removeHashtag } from "~/lib/utils";
+
+interface _TrendingTopics {
+  hashtag: string;
+  count: unknown | string;
+}
 
 export async function RightBar() {
   const session = await auth();
@@ -69,7 +73,7 @@ async function TrendingTopics() {
         Trending Topics
       </div>
       <div className="flex flex-col gap-2">
-        {trendings.slice(0, 3).map((item: any, idx: number) => (
+        {trendings.slice(0, 3).map((item: _TrendingTopics, idx: number) => (
           <div key={idx} className="flex flex-col">
             <Link
               className="font-bold text-white hover:underline"
@@ -79,7 +83,7 @@ async function TrendingTopics() {
             </Link>
 
             <span className="text-sm text-muted-foreground">
-              {item?.count} posts
+              {item?.count as string} posts
             </span>
           </div>
         ))}

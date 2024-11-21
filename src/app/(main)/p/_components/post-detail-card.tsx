@@ -3,14 +3,19 @@
 import Image from "next/image";
 
 import { UserHoverCard } from "~/components/globals/user-hover-card";
+import { PostDetaiByIdType } from "~/server/tRPCtypes";
+import { Comments } from "~/components/globals/comments";
 import { api } from "~/trpc/react";
 import { CommentDetailCard } from "./comment-detail-card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { Label } from "~/components/ui/label";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Separator } from "~/components/ui/separator";
+import { useSession } from "next-auth/react";
+import { DialogOfferLogin } from "~/components/globals/dialog-offer-login";
+import { toast } from "sonner";
 
 import {
   Ban,
@@ -46,19 +51,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { useSession } from "next-auth/react";
-import { DialogOfferLogin } from "~/components/globals/dialog-offer-login";
-import { toast } from "sonner";
 
-export function PostDetailCard({ post }: { post: any }) {
+export function PostDetailCard({ post }: { post: PostDetaiByIdType }) {
   const session = useSession();
-  console.log("session", session);
 
   return (
     <>
       <section className="group mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4">
         <PostHeader creator={post?.user} createdAt={post?.createdAt} />
-        <PostContent imageUrl={post?.imageUrl} title={post?.content} />
+        <PostContent imageUrl={post!.imageUrl} title={post!.content} />
         <Separator />
         <PostFooter post={post} session={session} />
       </section>
@@ -208,6 +209,7 @@ const PostContent = ({
 const PostFooter = ({ post, session }: { post: any; session: any }) => {
   console.log("post", post);
   const utils = api.useUtils();
+  const commentRef = useRef<HTMLInputElement>(null);
 
   const [isBookmarked, setIsBookmarked] = useState(
     post?.bookmarks?.some(
@@ -223,7 +225,7 @@ const PostFooter = ({ post, session }: { post: any; session: any }) => {
     ),
   );
   const [isOpenDialogOfferLogin, setIsOpenDialogOfferLogin] = useState(false);
-  const commentsCount = 0;
+  const [isOpenComment, setIsOpenComment] = useState(false);
 
   const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation({
     onSuccess: () => utils.post.invalidate(),
@@ -276,47 +278,61 @@ const PostFooter = ({ post, session }: { post: any; session: any }) => {
   };
 
   return (
-    <div className="flex w-full items-center justify-between">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Heart
-            onClick={onClickLikeHandler}
-            size={20}
-            fill={isClick ? "#ef4444" : "#0f172a"}
-            className={cn("cursor-pointer text-muted-foreground", {
-              "text-red-500": isClick,
-            })}
-          />
-          <span className="text-sm text-muted-foreground">{totalLikes}</span>
+    <>
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Heart
+              onClick={onClickLikeHandler}
+              size={20}
+              fill={isClick ? "#ef4444" : "#0f172a"}
+              className={cn("cursor-pointer text-muted-foreground", {
+                "text-red-500": isClick,
+              })}
+            />
+            <span className="text-sm text-muted-foreground">{totalLikes}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <MessageCircle
+              onClick={() => setIsOpenComment(!isOpenComment)}
+              size={20}
+              className={cn("cursor-pointer text-muted-foreground")}
+            />
+            <span className="text-sm text-muted-foreground">
+              {post?._count?.comments}
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <MessageCircle
-            size={20}
-            className={cn("cursor-pointer text-muted-foreground")}
-          />
-          <span className="text-sm text-muted-foreground">{commentsCount}</span>
+        <div>
+          <div
+            onClick={() => onClickBookmarkHandler()}
+            className="flex cursor-pointer items-center gap-2"
+          >
+            <Bookmark
+              size={20}
+              fill={isBookmarked ? "#3b82f6" : "#0f172a"}
+              className={cn("text-muted-foreground", {
+                "text-blue-500": isBookmarked,
+              })}
+            />
+          </div>
         </div>
-      </div>
 
-      <div>
-        <div
-          onClick={() => onClickBookmarkHandler()}
-          className="flex cursor-pointer items-center gap-2"
-        >
-          <Bookmark
-            size={20}
-            fill={isBookmarked ? "#3b82f6" : "#0f172a"}
-            className={cn("text-muted-foreground", {
-              "text-blue-500": isBookmarked,
-            })}
-          />
-        </div>
+        <DialogOfferLogin
+          isOpen={isOpenDialogOfferLogin}
+          onOpenChange={setIsOpenDialogOfferLogin}
+        />
       </div>
-      <DialogOfferLogin
-        isOpen={isOpenDialogOfferLogin}
-        onOpenChange={setIsOpenDialogOfferLogin}
-      />
-    </div>
+      {isOpenComment && (
+        <Comments
+          postId={post?.id}
+          creator={post?.user}
+          commentRef={commentRef}
+          withoutCommentList
+        />
+      )}
+    </>
   );
 };

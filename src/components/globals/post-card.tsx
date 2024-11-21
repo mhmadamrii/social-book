@@ -72,6 +72,8 @@ interface PostCardProps {
   };
 }
 
+type _CreatorType = PostCardProps["creator"];
+
 export function PostCard({
   title,
   id,
@@ -223,7 +225,12 @@ export function PostCard({
         </div>
       </div>
       {isOpenComment && (
-        <Comments postId={id} creator={creator} commentRef={commentRef} />
+        <Comments
+          postId={id}
+          creator={creator}
+          commentRef={commentRef}
+          withoutCommentList={false}
+        />
       )}
       <DialogOfferLogin
         isOpen={isOpenDialogOfferLogin}
@@ -240,7 +247,7 @@ const PostHeader = ({
   isCurrentUserOwnedPost,
   id,
 }: {
-  creator: any;
+  creator: _CreatorType;
   userId: string;
   createdAt: Date;
   isCurrentUserOwnedPost: boolean;

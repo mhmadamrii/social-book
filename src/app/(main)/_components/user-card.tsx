@@ -8,14 +8,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { getInitial } from "~/lib/utils";
+import { AvailableUsersType } from "~/server/tRPCtypes";
 import { api } from "~/trpc/react";
+
+type AvailableUserType = AvailableUsersType[number];
 
 export function UserCard({
   user,
   followersCount,
   isAlreadyFollowing,
 }: {
-  user: any;
+  user: AvailableUserType;
   followersCount: number;
   isAlreadyFollowing: boolean;
 }) {
@@ -44,9 +47,9 @@ export function UserCard({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={user?.image} />
+            <AvatarImage src={user?.image as string} />
             <AvatarFallback>
-              {getInitial(user.username ?? user.name)}
+              {getInitial(user.username ?? user.name ?? "")}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">

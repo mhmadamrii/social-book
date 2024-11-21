@@ -1,19 +1,19 @@
 import { NoCommentFound } from "~/components/globals/no-comment-found";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Separator } from "~/components/ui/separator";
 import { getInitial, timeAgo } from "~/lib/utils";
+import { PostDetaiByIdType } from "~/server/tRPCtypes";
 
-export function CommentDetailCard({ post }: { post: any }) {
+export function CommentDetailCard({ post }: { post: PostDetaiByIdType }) {
   if (post?.comments?.length === 0) {
     return <NoCommentFound message="This post has no comments yet." />;
   }
-  return post?.comments?.map((item: any, idx: number) => (
+  return post?.comments?.map((item, idx: number) => (
     <section key={idx} className="rounded-2xl bg-slate-900 px-2 py-4">
       <div className="mb-5 flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={post?.user?.image} />
+          <AvatarImage src={post?.user?.image as string} />
           <AvatarFallback>
-            {getInitial(post?.user?.username ?? post?.user?.name)}
+            {getInitial(post?.user?.username ?? post?.user?.name ?? "")}
           </AvatarFallback>
         </Avatar>
 

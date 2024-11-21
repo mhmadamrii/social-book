@@ -48,7 +48,32 @@ export const postRouter = createTRPCRouter({
       return ctx.db.post.findMany({
         where: {
           content: {
-            contains: input.hashtag,
+            contains: `#${input.hashtag}`,
+          },
+        },
+        include: {
+          user: true,
+          likes: {
+            select: {
+              userId: true,
+            },
+          },
+          bookmarks: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
+          comments: {
+            select: {
+              userId: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
           },
         },
       });
@@ -329,6 +354,9 @@ export const postRouter = createTRPCRouter({
 
   getMyNotifications: protectedProcedure.query(async ({ ctx }) => {
     const notifications = await ctx.db.notification.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
       where: {
         recipientId: ctx.session.user.id,
         read: false,
@@ -363,3 +391,5 @@ export const postRouter = createTRPCRouter({
       });
     }),
 });
+
+export type PostRouterType = typeof postRouter;

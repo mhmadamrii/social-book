@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -161,3 +162,5 @@ export const authRouter = createTRPCRouter({
       });
     }),
 });
+
+export type AuthRouterType = typeof authRouter;

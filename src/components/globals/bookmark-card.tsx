@@ -2,14 +2,13 @@
 
 import Image from "next/image";
 
-import { cn, extractHashtags, getInitial, removeHashtags } from "~/lib/utils";
+import { extractHashtags, getInitial, removeHashtags } from "~/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Bookmark, ExternalLink, Heart, MessageCircle } from "lucide-react";
+import { Bookmark, ExternalLink } from "lucide-react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Separator } from "../ui/separator";
-import { Comments } from "./comments";
 import { Link } from "next-view-transitions";
 
 export function BookmarkCard({ item }: { item: any }) {

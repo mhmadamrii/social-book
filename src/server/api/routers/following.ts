@@ -142,3 +142,5 @@ export const followingRouter = createTRPCRouter({
       };
     }),
 });
+
+export type FollowingRouterType = typeof followingRouter;

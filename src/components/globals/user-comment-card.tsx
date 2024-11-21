@@ -1,15 +1,24 @@
 import { getInitial, timeAgo } from "~/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
+import { AllCommentsType } from "~/server/tRPCtypes";
 
-export function UserCommentCard({ userComment }: { userComment: any }) {
+type _UserCommentType = AllCommentsType[number];
+
+export function UserCommentCard({
+  userComment,
+}: {
+  userComment: _UserCommentType;
+}) {
   return (
     <section className="my-4 flex w-full flex-col gap-2 px-2 py-4">
       <div className="flex items-start gap-2">
         <Avatar>
-          <AvatarImage src={userComment?.user?.image} />
+          <AvatarImage src={userComment?.user?.image as string} />
           <AvatarFallback>
-            {getInitial(userComment?.user?.username ?? userComment?.user?.name)}
+            {getInitial(
+              userComment?.user?.username ?? userComment?.user?.name ?? "",
+            )}
           </AvatarFallback>
         </Avatar>
 

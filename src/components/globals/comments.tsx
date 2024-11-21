@@ -6,17 +6,23 @@ import { api } from "~/trpc/react";
 import { UserCommentCard } from "./user-comment-card";
 import { LoadingSpinner } from "./loading-spinner";
 import { UserSkeleton } from "./user-skeleton";
+import { cn } from "~/lib/utils";
 
 interface CommentsProps {
   postId: number;
   commentRef: RefObject<HTMLInputElement>;
   creator: any;
+  withoutCommentList: boolean;
 }
 
-export function Comments({ commentRef, postId, creator }: CommentsProps) {
+export function Comments({
+  commentRef,
+  postId,
+  creator,
+  withoutCommentList,
+}: CommentsProps) {
   const utils = api.useUtils();
   const [comment, setComment] = useState("");
-  console.log("comment", comment);
 
   const { data: comments, isLoading } = api.post.getAllComments.useQuery({
     postId: postId,
@@ -63,7 +69,11 @@ export function Comments({ commentRef, postId, creator }: CommentsProps) {
         </Button>
       </div>
 
-      <div>
+      <div
+        className={cn("block", {
+          hidden: withoutCommentList,
+        })}
+      >
         {comments?.length === 0 && (
           <h1 className="text-center">No comment yet.</h1>
         )}

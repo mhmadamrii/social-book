@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Link } from "next-view-transitions";
 
+import { Link } from "next-view-transitions";
 import { Bookmark, ExternalLink, Heart, MessageCircle } from "lucide-react";
 import { Comments } from "~/components/globals/comments";
 import { useEffect, useRef, useState } from "react";
@@ -11,7 +11,6 @@ import { useInView } from "react-intersection-observer";
 import { NoPostFound } from "~/components/globals/no-post-found";
 import { PostSkeleton } from "~/components/globals/post-skeleton";
 import { UserHoverCard } from "~/components/globals/user-hover-card";
-import { UserSkeleton } from "~/components/globals/user-skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Separator } from "~/components/ui/separator";
 
@@ -23,7 +22,7 @@ import {
   timeAgo,
 } from "~/lib/utils";
 
-export function FollowingFeed({ userId }: { userId: any }) {
+export function FollowingFeed({ userId }: { userId: string }) {
   const { ref, inView } = useInView();
 
   const {
@@ -229,6 +228,7 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
           postId={item.id}
           creator={item?.user}
           commentRef={commentRef}
+          withoutCommentList={false}
         />
       )}
     </div>
