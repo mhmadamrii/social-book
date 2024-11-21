@@ -7,6 +7,7 @@ import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Button } from "~/components/ui/button";
 import { GetCurrentUserType, GetUserByUsernameType } from "~/server/tRPCtypes";
 import { api } from "~/trpc/react";
+import { EditProfile } from "./edit-profile";
 
 export function FollowUser({
   user,
@@ -49,28 +50,32 @@ export function FollowUser({
         </h2>
         <p className="text-sm text-muted-foreground">@{user?.username}</p>
       </div>
-      <Button
-        onClick={() => {
-          if (!session.data) {
-            return;
-          }
-          if (isFollowed) {
-            setIsFollowed(false);
-            unfollow({
-              userId: user!.id,
-            });
-          } else {
-            setIsFollowed(true);
-            follow({
-              userId: user?.id as string,
-            });
-          }
-        }}
-        variant={isFollowed ? "outline" : "default"}
-        className="ml-auto mt-2 sm:mt-0"
-      >
-        {isFollowed ? "Unfollow" : "Follow"}
-      </Button>
+      {currentUser?.id === user?.id ? (
+        <EditProfile />
+      ) : (
+        <Button
+          onClick={() => {
+            if (!session.data) {
+              return;
+            }
+            if (isFollowed) {
+              setIsFollowed(false);
+              unfollow({
+                userId: user!.id,
+              });
+            } else {
+              setIsFollowed(true);
+              follow({
+                userId: user?.id as string,
+              });
+            }
+          }}
+          variant={isFollowed ? "outline" : "default"}
+          className="ml-auto mt-2 sm:mt-0"
+        >
+          {isFollowed ? "Unfollow" : "Follow"}
+        </Button>
+      )}
     </div>
   );
 }

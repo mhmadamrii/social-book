@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -158,6 +157,23 @@ export const authRouter = createTRPCRouter({
           email: input.email,
           password: input.password,
           name: `${input.username}.social`,
+        },
+      });
+    }),
+
+  editProfile: protectedProcedure
+    .input(
+      z.object({ name: z.string(), imageUrl: z.string(), bio: z.string() }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.user.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: {
+          name: input.name,
+          image: input.imageUrl,
+          bio: input.bio,
         },
       });
     }),

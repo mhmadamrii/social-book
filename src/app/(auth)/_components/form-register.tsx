@@ -6,9 +6,9 @@ import bcryptjs from "bcryptjs";
 import { Input } from "~/components/ui/input";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { toast } from "~/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "~/trpc/react";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { RegisterSchema, registerSchema } from "~/lib/validation";
 import { cn } from "~/lib/utils";
@@ -44,10 +44,7 @@ export function FormRegister() {
         redirect: true,
       });
 
-      toast({
-        title: "Registered",
-        description: "lorem ipsum",
-      });
+      toast.success("Registered");
     },
     onError: (err: any) => {
       setErrorMessage(err.message);
