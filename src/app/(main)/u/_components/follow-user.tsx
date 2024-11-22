@@ -5,37 +5,39 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Button } from "~/components/ui/button";
-import { GetCurrentUserType, GetUserByUsernameType } from "~/server/tRPCtypes";
+import { CurrentUserType, GetUserByUsernameType } from "~/server/tRPCtypes";
 import { api } from "~/trpc/react";
 import { EditProfile } from "./edit-profile";
+import { toast } from "sonner";
 
 export function FollowUser({
   user,
   currentUser,
 }: {
   user: GetUserByUsernameType;
-  currentUser: GetCurrentUserType;
+  currentUser: CurrentUserType;
 }) {
+  console.log("user info", user);
+  console.log("current user info", currentUser);
   const session = useSession();
   const router = useRouter();
   const utils = api.useUtils();
 
-  const [isFollowed, setIsFollowed] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(
+    user?.followings?.some((u) => u.followerId === currentUser?.id) ?? false,
+  );
 
-  const { mutate: follow, isPending } = api.following.followUser.useMutation({
+  const { mutate: follow } = api.following.followUser.useMutation({
     onSuccess: () => {
-      utils.following.invalidate();
       router.refresh();
     },
   });
 
-  const { mutate: unfollow, isPending: isUnfollowing } =
-    api.following.unfollowUser.useMutation({
-      onSuccess: () => {
-        utils.following.invalidate();
-        router.refresh();
-      },
-    });
+  const { mutate: unfollow } = api.following.unfollowUser.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
 
   return (
     <div className="flex justify-between">
@@ -56,7 +58,7 @@ export function FollowUser({
         <Button
           onClick={() => {
             if (!session.data) {
-              return;
+              return toast.error("Please login to follow this user");
             }
             if (isFollowed) {
               setIsFollowed(false);

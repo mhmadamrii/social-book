@@ -17,7 +17,6 @@ interface _TrendingTopics {
 
 export async function RightBar() {
   const session = await auth();
-  console.log("session current user", session?.current_user);
 
   if (!session) {
     return <UnAuthenticatedRightBar />;

@@ -9,6 +9,7 @@ import { api } from "~/trpc/server";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { UserDetailPosts } from "../_components/user-detail-posts";
 import { FollowUser } from "../_components/follow-user";
+import { auth } from "~/server/auth";
 
 export default function User({ params }: { params: { username: string } }) {
   return (
@@ -27,11 +28,11 @@ export default function User({ params }: { params: { username: string } }) {
 }
 
 async function UserWithServerData({ username }: { username: string }) {
-  const [user, currentUser] = await Promise.all([
+  const [user, session] = await Promise.all([
     api.auth.getUserByUsername({
       username,
     }),
-    api.auth.getCurrentUser(),
+    auth(),
   ]);
 
   return (
@@ -48,7 +49,7 @@ async function UserWithServerData({ username }: { username: string }) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4 px-4 sm:px-6">
-        <FollowUser currentUser={currentUser} user={user} />
+        <FollowUser currentUser={session?.current_user} user={user} />
         <div className="flex flex-wrap justify-between gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Users2Icon className="h-4 w-4" />

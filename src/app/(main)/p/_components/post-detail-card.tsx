@@ -245,7 +245,7 @@ const PostFooter = ({ post, session }: { post: any; session: any }) => {
   const { mutate: deleteBookmark } = api.bookmark.deleteBookmark.useMutation({
     onSuccess: (res) => {
       utils.post.invalidate();
-      toast.success("Bookmark removed!");
+      toast.success("Post removed!");
     },
   });
 

@@ -7,11 +7,12 @@ import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
-import { getInitial } from "~/lib/utils";
+import { cn, getInitial } from "~/lib/utils";
 import { AvailableUsersType } from "~/server/tRPCtypes";
 import { api } from "~/trpc/react";
+import { usePathname } from "next/navigation";
 
-type AvailableUserType = AvailableUsersType[number];
+type AvailableUserType = AvailableUsersType[number] | null;
 
 export function UserCard({
   user,
@@ -22,6 +23,7 @@ export function UserCard({
   followersCount: number;
   isAlreadyFollowing: boolean;
 }) {
+  const pathname = usePathname();
   const router = useRouter();
   const utils = api.useUtils();
 
@@ -44,21 +46,25 @@ export function UserCard({
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div
+        className={cn("flex items-center justify-between", {
+          hidden: pathname === `/u/${user?.username}`,
+        })}
+      >
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarImage src={user?.image as string} />
             <AvatarFallback>
-              {getInitial(user.username ?? user.name ?? "")}
+              {getInitial(user?.username ?? user?.name ?? "")}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <div className="flex gap-2">
               <Link
-                href={`/u/${user.username}`}
+                href={`/u/${user?.username}`}
                 className="flex w-full cursor-pointer items-center gap-1 truncate text-sm hover:underline"
               >
-                {user.name ?? user?.username}
+                {user?.name ?? user?.username}
                 {user?.isVerified && (
                   <span>
                     <VerifiedIcon />
@@ -80,12 +86,12 @@ export function UserCard({
               if (isFollowed) {
                 setIsFollowed(false);
                 unfollow({
-                  userId: user.id,
+                  userId: user?.id as string,
                 });
               } else {
                 setIsFollowed(true);
                 follow({
-                  userId: user.id,
+                  userId: user?.id as string,
                 });
               }
             }}

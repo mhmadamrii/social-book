@@ -66,7 +66,7 @@ export function FormLogin() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input disabled={isPending} placeholder="Username" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,7 +79,11 @@ export function FormLogin() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <InputPassword placeholder="Password" {...field} />
+                <InputPassword
+                  disabled={isPending}
+                  placeholder="Password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
