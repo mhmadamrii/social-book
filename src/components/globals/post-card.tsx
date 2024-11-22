@@ -96,6 +96,7 @@ export function PostCard({
   const [isOpenComment, setIsOpenComment] = useState(false);
   const [totalLikes, setTotalLikes] = useState(likesCount);
   const [localIsLikedByUser, setLocalIsLikedByUser] = useState(isLikedByUser);
+  const [localIsBookmarked, setLocalIsBookmarked] = useState(isBookmarked);
 
   const { mutate: decreaseLikes } = api.post.decreaseLikes.useMutation({
     onSuccess: () => utils.post.invalidate(),
@@ -151,6 +152,7 @@ export function PostCard({
   };
 
   const onClickBookmarkHandler = () => {
+    setLocalIsBookmarked((prev: boolean) => !prev);
     if (!session.data) {
       setIsOpenDialogOfferLogin(true);
       return;
@@ -216,9 +218,9 @@ export function PostCard({
           >
             <Bookmark
               size={20}
-              fill={isBookmarked ? "#3b82f6" : "#0f172a"}
+              fill={localIsBookmarked ? "#3b82f6" : "#0f172a"}
               className={cn("text-muted-foreground", {
-                "text-blue-500": isBookmarked,
+                "text-blue-500": localIsBookmarked,
               })}
             />
           </div>

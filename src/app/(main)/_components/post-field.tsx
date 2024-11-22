@@ -14,12 +14,12 @@ import { UploadFile } from "~/components/globals/upload-file";
 import { deleteFiles } from "~/lib/utapi";
 import { AnimateUpload } from "~/components/globals/animate-upload";
 import { cn, extractHashtags, getInitial } from "~/lib/utils";
+import { CurrentUserType, GetCurrentUserType } from "~/server/tRPCtypes";
 
-export function PostField() {
-  const { data: currentUser } = api.auth.getCurrentUser.useQuery();
-
+export function PostField({ currentUser }: { currentUser: CurrentUserType }) {
   const router = useRouter();
   const utils = api.useUtils();
+
   const [isUploading, setIsUploading] = useState(false);
   const [post, setPost] = useState("");
   const [file, setFile] = useState<any>(null);

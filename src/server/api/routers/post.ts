@@ -360,6 +360,9 @@ export const postRouter = createTRPCRouter({
       where: {
         recipientId: ctx.session.user.id,
         read: false,
+        issuerId: {
+          not: ctx.session.user.id,
+        },
       },
       include: {
         recipient: true,
@@ -371,6 +374,9 @@ export const postRouter = createTRPCRouter({
     const unreadCount = await ctx.db.notification.count({
       where: {
         recipientId: ctx.session.user.id,
+        issuerId: {
+          not: ctx.session.user.id,
+        },
         read: false,
       },
     });

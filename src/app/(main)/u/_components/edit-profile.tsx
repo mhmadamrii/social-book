@@ -9,6 +9,7 @@ import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
+import { Textarea } from "~/components/ui/textarea";
 
 import {
   Dialog,
@@ -19,7 +20,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { Textarea } from "~/components/ui/textarea";
 
 const maleAvatars = [
   "https://avatar.iran.liara.run/public/34",

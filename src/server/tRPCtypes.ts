@@ -21,6 +21,24 @@ export type GetAllSearchableUsersType = Prisma.UserGetPayload<{
   };
 }>[];
 
+export type CurrentUserType =
+  | {
+      id: string;
+      name: string | null;
+      username: string | null;
+      password: string | null;
+      email: string | null;
+      emailVerified: Date | null;
+      image: string | null;
+      bio: string | null;
+      isVerified: boolean;
+      createdAt: Date;
+      updatedAt: Date;
+      followers?: any[];
+    }
+  | null
+  | undefined;
+
 export type GetCurrentUserType = RouterOutput["getCurrentUser"];
 export type GetUserByUsernameType = RouterOutput["getUserByUsername"];
 export type FollowedPostsType = RouterOutput["getFollowedPosts"];

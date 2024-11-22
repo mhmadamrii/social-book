@@ -10,7 +10,7 @@ export default async function Home() {
 
   return (
     <div className="w-full space-y-5">
-      {session && <PostField />}
+      {session && <PostField currentUser={session?.current_user} />}
       <div className="w-full">
         <Tabs defaultValue="for-you">
           <TabsList>

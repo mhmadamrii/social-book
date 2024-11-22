@@ -1,5 +1,4 @@
 import { Link } from "next-view-transitions";
-
 import { UserButton } from "./user-button";
 import { SearchField } from "./search-field";
 import { api } from "~/trpc/server";
@@ -39,7 +38,7 @@ export async function Navbar() {
             "hidden sm:hidden": !session,
           })}
         >
-          <UserButton />
+          <UserButton session={session} />
         </div>
       </div>
     </header>

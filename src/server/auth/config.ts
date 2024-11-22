@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 
 import { db } from "~/server/db";
 import { TRPCError } from "@trpc/server";
+import { CurrentUserType } from "../tRPCtypes";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -21,6 +22,7 @@ declare module "next-auth" {
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
+    current_user?: CurrentUserType;
   }
 
   // interface User {
@@ -107,6 +109,15 @@ export const authConfig = {
       // Pass user ID to session
       if (token) {
         session.user.id = token.sub as string;
+        session.current_user = await db.user.findUnique({
+          where: {
+            id: token.sub as string,
+          },
+          include: {
+            followings: true,
+            followers: true,
+          },
+        });
       }
       return session;
     },

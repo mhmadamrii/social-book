@@ -8,6 +8,7 @@ import { SearchUser } from "~/components/globals/search-user";
 import { auth } from "~/server/auth";
 import { PeopleYouMayKnow } from "~/components/globals/people-you-may-know";
 import { removeHashtag } from "~/lib/utils";
+import { CurrentUserType } from "~/server/tRPCtypes";
 
 interface _TrendingTopics {
   hashtag: string;
@@ -16,6 +17,7 @@ interface _TrendingTopics {
 
 export async function RightBar() {
   const session = await auth();
+  console.log("session current user", session?.current_user);
 
   if (!session) {
     return <UnAuthenticatedRightBar />;
@@ -24,17 +26,16 @@ export async function RightBar() {
   return (
     <aside className="sticky top-[6rem] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
       <Suspense fallback={<LoadingSpinner />}>
-        <WhoToFollow />
+        <WhoToFollow currentUser={session?.current_user} />
       </Suspense>
       <TrendingTopics />
     </aside>
   );
 }
 
-async function WhoToFollow() {
-  const [availableUsers, currentUser] = await Promise.all([
+async function WhoToFollow({ currentUser }: { currentUser: CurrentUserType }) {
+  const [availableUsers] = await Promise.all([
     api.following.getAvailableFollows(),
-    api.auth.getCurrentUser(),
   ]);
 
   return (
@@ -52,8 +53,8 @@ async function WhoToFollow() {
               user={item}
               followersCount={item._count.followings}
               isAlreadyFollowing={
-                currentUser?.followers.some(
-                  (following) => following.followingId === item.id,
+                currentUser?.followers?.some(
+                  (following: any) => following.followingId === item.id,
                 ) ?? false
               }
             />
