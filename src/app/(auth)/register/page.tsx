@@ -1,6 +1,6 @@
-import { Link } from "next-view-transitions";
 import Image from "next/image";
 
+import { Link } from "next-view-transitions";
 import { FormRegister } from "../_components/form-register";
 
 export default async function Register() {
