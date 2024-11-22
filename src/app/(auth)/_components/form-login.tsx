@@ -21,7 +21,8 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 
-export function FormLogin() {
+export function FormLogin({ redirect }: { redirect: string }) {
+  console.log("redirect", redirect);
   const [loginError, setLoginError] = useState("");
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
@@ -45,7 +46,12 @@ export function FormLogin() {
         setLoginError("Incorrect username or password");
         return;
       }
-      router.push("/");
+
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       console.log("probably", error);
     } finally {

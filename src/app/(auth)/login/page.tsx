@@ -5,7 +5,13 @@ import { Link } from "next-view-transitions";
 import { FormLogin } from "../_components/form-login";
 import { DiscordButton } from "../_components/discord-button";
 
-export default async function Login() {
+export default async function Login({
+  searchParams,
+}: {
+  searchParams: { redirect: string };
+}) {
+  const { redirect } = await searchParams;
+
   return (
     <main className="flex h-screen items-center justify-center p-5">
       <div className="flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card bg-slate-900 shadow-2xl">
@@ -21,7 +27,7 @@ export default async function Login() {
               <span>OR</span>
               <div className="h-px flex-1 bg-muted" />
             </div>
-            <FormLogin />
+            <FormLogin redirect={redirect} />
             <Link
               href="/register"
               className="block text-center hover:underline"

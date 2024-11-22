@@ -1,5 +1,6 @@
 import { Link } from "next-view-transitions";
 import { Dispatch, SetStateAction } from "react";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,11 +16,15 @@ import {
 interface DialogOfferLoginProps {
   isOpen: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
+  message?: string;
+  redirectUri?: string;
 }
 
 export function DialogOfferLogin({
   isOpen,
   onOpenChange,
+  message,
+  redirectUri,
 }: DialogOfferLoginProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
@@ -29,13 +34,18 @@ export function DialogOfferLogin({
             Social-Book
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Please login to continue
+            Please login to continue. {message ?? ""}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction>
-            <Link href="/login">Login</Link>
+            <Link
+              href={`/login?redirect=${redirectUri}`}
+              className="flex w-full gap-2 transition-all"
+            >
+              <span>Login</span>
+            </Link>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -7,6 +7,7 @@ import { UserCommentCard } from "./user-comment-card";
 import { LoadingSpinner } from "./loading-spinner";
 import { UserSkeleton } from "./user-skeleton";
 import { cn } from "~/lib/utils";
+import { useTransitionRouter } from "next-view-transitions";
 
 interface CommentsProps {
   postId: number;
@@ -22,6 +23,7 @@ export function Comments({
   withoutCommentList,
 }: CommentsProps) {
   const utils = api.useUtils();
+  const router = useTransitionRouter();
   const [comment, setComment] = useState("");
 
   const { data: comments, isLoading } = api.post.getAllComments.useQuery({
@@ -31,6 +33,7 @@ export function Comments({
   const { mutate, isPending } = api.post.createComment.useMutation({
     onSuccess: (res) => {
       utils.post.invalidate();
+      router.refresh();
       commentRef.current?.focus();
       setComment("");
     },

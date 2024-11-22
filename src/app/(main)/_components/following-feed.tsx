@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { Link } from "next-view-transitions";
+import { toast } from "sonner";
 import { Bookmark, ExternalLink, Heart, MessageCircle } from "lucide-react";
 import { Comments } from "~/components/globals/comments";
 import { useEffect, useRef, useState } from "react";
@@ -70,10 +71,14 @@ export function FollowingFeed({ userId }: { userId: string }) {
 function PostSection({ item, userId }: { item: any; userId: string }) {
   const utils = api.useUtils();
   const commentRef = useRef<HTMLInputElement>(null);
+  const [isBookmarked, setIsBookmarked] = useState(
+    item?.bookmarks?.some((b: any) => b.userId === userId ?? false) ?? false,
+  );
   const [isOpenComment, setIsOpenComment] = useState(false);
   const [totalLikes, setTotalLikes] = useState<number>(
     item?._count?.likes ?? 0,
   );
+
   const [localIsLikedByUser, setLocalIsLikedByUser] = useState(
     item.likes.some((like: any) => like.userId === userId ?? false),
   );
@@ -84,6 +89,20 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
 
   const { mutate: increaseLikes } = api.post.increaseLikes.useMutation({
     onSuccess: () => utils.following.invalidate(),
+  });
+
+  const { mutate: createBookmark } = api.bookmark.createBookmark.useMutation({
+    onSuccess: (res) => {
+      utils.post.invalidate();
+      toast.success("Post saved!");
+    },
+  });
+
+  const { mutate: deleteBookmark } = api.bookmark.deleteBookmark.useMutation({
+    onSuccess: (res) => {
+      utils.post.invalidate();
+      toast.success("Post removed!");
+    },
   });
 
   const onClickLikeHandler = ({ id }: { id: number }) => {
@@ -99,7 +118,16 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
   };
 
   const onClickBookmarkHandler = () => {
-    return;
+    setIsBookmarked((prev: boolean) => !prev);
+    if (isBookmarked) {
+      deleteBookmark({
+        postId: item.id,
+      });
+    } else {
+      createBookmark({
+        postId: item.id,
+      });
+    }
   };
 
   const handleToggleComment = async () => {
@@ -110,7 +138,6 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
     }
   };
 
-  const isBookmarked = false;
   const postHashtags = extractHashtags(item.content);
 
   return (

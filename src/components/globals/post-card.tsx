@@ -237,6 +237,8 @@ export function PostCard({
       <DialogOfferLogin
         isOpen={isOpenDialogOfferLogin}
         onOpenChange={setIsOpenDialogOfferLogin}
+        message="You will be redirected to this post after login"
+        redirectUri={`/p/${id}`}
       />
     </section>
   );

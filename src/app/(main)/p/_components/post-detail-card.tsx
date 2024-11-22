@@ -207,7 +207,6 @@ const PostContent = ({
 };
 
 const PostFooter = ({ post, session }: { post: any; session: any }) => {
-  console.log("post", post);
   const utils = api.useUtils();
   const commentRef = useRef<HTMLInputElement>(null);
 
@@ -264,7 +263,19 @@ const PostFooter = ({ post, session }: { post: any; session: any }) => {
     }
   };
 
+  const onClickCommentHandler = () => {
+    if (!session.data) {
+      setIsOpenDialogOfferLogin(true);
+      return;
+    }
+    setIsOpenComment(!isOpenComment);
+  };
+
   const onClickBookmarkHandler = () => {
+    if (!session.data) {
+      setIsOpenDialogOfferLogin(true);
+      return;
+    }
     setIsBookmarked((prev: boolean) => !prev);
     if (isBookmarked) {
       deleteBookmark({
@@ -295,7 +306,7 @@ const PostFooter = ({ post, session }: { post: any; session: any }) => {
 
           <div className="flex items-center gap-2">
             <MessageCircle
-              onClick={() => setIsOpenComment(!isOpenComment)}
+              onClick={onClickCommentHandler}
               size={20}
               className={cn("cursor-pointer text-muted-foreground")}
             />
@@ -323,6 +334,8 @@ const PostFooter = ({ post, session }: { post: any; session: any }) => {
         <DialogOfferLogin
           isOpen={isOpenDialogOfferLogin}
           onOpenChange={setIsOpenDialogOfferLogin}
+          message="You will be redirected to this post after login"
+          redirectUri={`/p/${post?.id}`}
         />
       </div>
       {isOpenComment && (

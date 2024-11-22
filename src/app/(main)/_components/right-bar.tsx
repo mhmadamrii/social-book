@@ -104,6 +104,7 @@ async function UnAuthenticatedRightBar() {
         ))}
         <SearchUser />
       </div>
+      <TrendingTopics />
     </aside>
   );
 }

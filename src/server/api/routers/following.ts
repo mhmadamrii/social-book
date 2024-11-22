@@ -116,6 +116,7 @@ export const followingRouter = createTRPCRouter({
         },
         include: {
           user: true,
+          bookmarks: true,
           likes: {
             select: {
               userId: true,
