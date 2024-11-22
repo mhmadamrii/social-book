@@ -7,9 +7,8 @@ import { useQueryState } from "nuqs";
 export function SearchField() {
   const [search, setSearch] = useQueryState("q");
 
-  const handleSubmit = () => {
-    console.log("Submitted");
-  };
+  const handleSubmit = () => {};
+
   return (
     <form method="GET" action="/search" className="w-full sm:w-auto">
       <div className="relative">

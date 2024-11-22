@@ -31,7 +31,6 @@ async function PostDetailWithServerData({ hashtag }: { hashtag: string }) {
   const post = await api.post.getPostsByHashtag({
     hashtag,
   });
-  console.log("post", post);
 
   if (!post) {
     return <NoPostFound />;

@@ -7,7 +7,6 @@ import { cn } from "~/lib/utils";
 
 export async function Navbar() {
   const session = await auth();
-  console.log("session", session);
 
   return (
     <header

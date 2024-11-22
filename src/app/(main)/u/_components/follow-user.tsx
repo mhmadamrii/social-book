@@ -17,8 +17,6 @@ export function FollowUser({
   user: GetUserByUsernameType;
   currentUser: CurrentUserType;
 }) {
-  console.log("user info", user);
-  console.log("current user info", currentUser);
   const session = useSession();
   const router = useRouter();
   const utils = api.useUtils();

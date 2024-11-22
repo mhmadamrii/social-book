@@ -4,7 +4,6 @@ import { getInitial, timeAgo } from "~/lib/utils";
 import { PostDetaiByIdType } from "~/server/tRPCtypes";
 
 export function CommentDetailCard({ post }: { post: PostDetaiByIdType }) {
-  console.log("comment items", post);
   if (post?.comments?.length === 0) {
     return <NoCommentFound message="This post has no comments yet." />;
   }

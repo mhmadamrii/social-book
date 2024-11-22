@@ -22,7 +22,6 @@ import {
 } from "~/components/ui/form";
 
 export function FormLogin({ redirect }: { redirect: string }) {
-  console.log("redirect", redirect);
   const [loginError, setLoginError] = useState("");
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
