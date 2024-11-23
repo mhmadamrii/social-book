@@ -1,24 +1,12 @@
-import { Link } from "next-view-transitions";
-
-import { Button } from "~/components/ui/button";
 import { timeAgo } from "~/lib/utils";
 import { NotifMenu } from "./_components/notif-menu";
 import { NotificationSkeleton } from "~/components/globals/notification-skeleton";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Separator } from "~/components/ui/separator";
 import { Suspense } from "react";
-import { AnimateLoad } from "~/components/globals/animate-load";
 import { NoNotificationFound } from "~/components/globals/no-notification-found";
 import { api } from "~/trpc/server";
-
-import {
-  Heart,
-  MessageCircle,
-  UserPlus,
-  MoreHorizontal,
-  Check,
-  ArrowRight,
-} from "lucide-react";
+import { Heart, MessageCircle, UserPlus } from "lucide-react";
 
 type NotificationType = "LIKE" | "COMMENT" | "FOLLOW";
 

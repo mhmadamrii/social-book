@@ -9,6 +9,7 @@ import { ThemeProvider } from "~/components/theme/theme-provider";
 import { SessionWrapper } from "~/components/globals/session-wrapper";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
+import "stream-chat-react/dist/css/v2/index.css";
 
 export const metadata: Metadata = {
   title: "Discover — Social Book",

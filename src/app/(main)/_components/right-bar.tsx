@@ -9,6 +9,8 @@ import { auth } from "~/server/auth";
 import { PeopleYouMayKnow } from "~/components/globals/people-you-may-know";
 import { removeHashtag } from "~/lib/utils";
 import { CurrentUserType } from "~/server/tRPCtypes";
+import { headers } from "next/headers";
+import { RightBarClient } from "./right-bar-client";
 
 interface _TrendingTopics {
   hashtag: string;
@@ -17,18 +19,22 @@ interface _TrendingTopics {
 
 export async function RightBar() {
   const session = await auth();
+  const headersList = await headers();
+  const fullUrl = headersList.get("referer") || "";
+  console.log("full url ->", fullUrl.includes("messages"));
+  console.log("full url", fullUrl);
 
   if (!session) {
     return <UnAuthenticatedRightBar />;
   }
 
   return (
-    <aside className="sticky top-[6rem] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
+    <RightBarClient>
       <Suspense fallback={<LoadingSpinner />}>
         <WhoToFollow currentUser={session?.current_user} />
       </Suspense>
       <TrendingTopics />
-    </aside>
+    </RightBarClient>
   );
 }
 
