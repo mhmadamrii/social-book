@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import streamServerClient from "~/lib/stream";
 
 import {
   createTRPCRouter,
@@ -151,7 +152,7 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      return ctx.db.user.create({
+      const newUser = ctx.db.user.create({
         data: {
           username: input.username,
           email: input.email,
@@ -159,6 +160,14 @@ export const authRouter = createTRPCRouter({
           name: `${input.username}.social`,
         },
       });
+
+      await streamServerClient.upsertUser({
+        id: (await newUser).id,
+        username: input.username,
+        name: input.username,
+      });
+
+      return newUser;
     }),
 
   editProfile: protectedProcedure

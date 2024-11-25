@@ -1,6 +1,8 @@
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { Menu } from "lucide-react";
+import { CustomEmojiPicker } from "./emoji-picker";
+import { customReactionOptions } from "./reaction-picker";
 
 import {
   Channel,
@@ -9,7 +11,12 @@ import {
   MessageInput,
   MessageList,
   Window,
+  ReactionSelector,
+  ReactionsList,
+  useChannelStateContext,
+  useMessageContext,
 } from "stream-chat-react";
+import { forwardRef } from "react";
 
 interface ChatChannelProps {
   open: boolean;
@@ -23,7 +30,7 @@ interface CustomChannelHeaderProps extends ChannelHeaderProps {
 export function ChatChannel({ open, openSidebar }: ChatChannelProps) {
   return (
     <div className={cn("w-full md:block", !open && "hidden")}>
-      <Channel>
+      <Channel EmojiPicker={() => <CustomEmojiPicker />}>
         <Window>
           <CustomChannelHeader openSidebar={openSidebar} />
           <MessageList />

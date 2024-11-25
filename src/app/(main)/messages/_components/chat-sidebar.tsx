@@ -1,5 +1,7 @@
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
+import { useSession } from "next-auth/react";
+import { DialogSelectUser } from "./dialog-select-user";
 import { MailPlus, X } from "lucide-react";
 import { useCallback, useState } from "react";
 
@@ -8,9 +10,8 @@ import {
   ChannelPreviewMessenger,
   ChannelPreviewUIComponentProps,
   useChatContext,
+  Avatar,
 } from "stream-chat-react";
-import { useSession } from "next-auth/react";
-import { DialogSelectUser } from "./dialog-select-user";
 
 export function ChatSidebar({
   open,
@@ -26,6 +27,12 @@ export function ChatSidebar({
     (props: ChannelPreviewUIComponentProps) => (
       <ChannelPreviewMessenger
         {...props}
+        Avatar={() => (
+          <Avatar
+            name={session?.current_user?.name ?? ""}
+            image={session?.current_user?.image}
+          />
+        )}
         onSelect={() => {
           props.setActiveChannel?.(props.channel, props.watchers);
           onClose();
