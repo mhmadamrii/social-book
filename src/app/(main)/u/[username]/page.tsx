@@ -17,7 +17,7 @@ export default function User({ params }: { params: { username: string } }) {
       <Suspense fallback={<AnimateLoad />}>
         <UserWithServerData username={params?.username} />
       </Suspense>
-      <div className="rounded-2xl bg-slate-500 p-4 dark:bg-slate-900">
+      <div className="rounded-2xl bg-card p-4 dark:bg-slate-900">
         <h1 className="text-center text-3xl font-bold">
           {params?.username}'s posts
         </h1>
@@ -36,7 +36,7 @@ async function UserWithServerData({ username }: { username: string }) {
   ]);
 
   return (
-    <Card className="group mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 pb-4">
+    <Card className="group mt-1 flex flex-col gap-5 rounded-2xl bg-card pb-4 dark:bg-slate-900">
       <div className="relative h-48 rounded-t-2xl bg-gradient-to-r from-blue-500 to-purple-500"></div>
       <CardHeader className="relative px-4 pt-2 sm:px-6">
         <div className="-mt-12 flex flex-col items-center gap-4 sm:-mt-16 sm:flex-row">

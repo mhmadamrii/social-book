@@ -20,9 +20,6 @@ interface _TrendingTopics {
 export async function RightBar() {
   const session = await auth();
   const headersList = await headers();
-  const fullUrl = headersList.get("referer") || "";
-  console.log("full url ->", fullUrl.includes("messages"));
-  console.log("full url", fullUrl);
 
   if (!session) {
     return <UnAuthenticatedRightBar />;
@@ -44,7 +41,7 @@ async function WhoToFollow({ currentUser }: { currentUser: CurrentUserType }) {
   ]);
 
   return (
-    <div className="space-y-3 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
+    <div className="space-y-3 rounded-2xl bg-card p-5 shadow-sm dark:bg-slate-900">
       <div className="flex items-center gap-2 text-xl font-bold">
         <UserPlus className="h-5 w-5" />
         Who to follow
@@ -73,7 +70,7 @@ async function WhoToFollow({ currentUser }: { currentUser: CurrentUserType }) {
 async function TrendingTopics() {
   const trendings = await api.trending.getAllTrendings();
   return (
-    <div className="space-y-5 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
+    <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm dark:bg-slate-900">
       <div className="flex items-center gap-2 text-xl font-bold">
         <TrendingUp className="h-5 w-5" />
         Trending Topics
@@ -82,13 +79,13 @@ async function TrendingTopics() {
         {trendings.slice(0, 3).map((item: _TrendingTopics, idx: number) => (
           <div key={idx} className="flex flex-col">
             <Link
-              className="font-bold text-white hover:underline"
+              className="font-bold text-black hover:underline dark:text-white"
               href={`/h/${removeHashtag(item.hashtag)}`}
             >
               {item?.hashtag}
             </Link>
 
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm dark:text-muted-foreground">
               {item?.count as string} posts
             </span>
           </div>
@@ -103,7 +100,7 @@ async function UnAuthenticatedRightBar() {
 
   return (
     <aside className="sticky top-[6rem] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
-      <div className="space-y-3 rounded-2xl bg-card bg-slate-900 p-5 shadow-sm">
+      <div className="space-y-3 rounded-2xl bg-card p-5 shadow-sm dark:bg-slate-900">
         <h1 className="text-xl font-bold">People you may know</h1>
         {peopleYouMayKnow.map((user) => (
           <PeopleYouMayKnow key={user.id} user={user} />

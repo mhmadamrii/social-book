@@ -15,7 +15,7 @@ import { removeHashtags, getInitial, extractHashtags } from "~/lib/utils";
 export default function PostDetail({ params }: { params: { tag: string } }) {
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="rounded-2xl bg-slate-900 p-4">
+      <div className="rounded-2xl bg-card p-4 dark:bg-slate-900">
         <h1 className="text-center text-3xl font-bold">
           Posts for #{params.tag}
         </h1>
@@ -44,7 +44,7 @@ async function PostDetailWithServerData({ hashtag }: { hashtag: string }) {
         return (
           <section
             key={item?.id}
-            className="rounded-2xl bg-slate-900 px-4 py-4 hover:bg-slate-900/80"
+            className="rounded-2xl bg-card px-4 py-4 dark:bg-slate-900"
           >
             <div className="flex items-center justify-between">
               <div className="flex w-full items-center gap-2">

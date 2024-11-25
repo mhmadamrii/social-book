@@ -10,7 +10,7 @@ export function Chat({ chatClient }: { chatClient: StreamChatType }) {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   return (
-    <main className="relative h-full w-full overflow-hidden rounded-2xl bg-card shadow-sm">
+    <main className="relative h-full w-full overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-gray-900">
       <div className="absolute bottom-0 top-0 flex w-full">
         <StreamChat
           client={chatClient}

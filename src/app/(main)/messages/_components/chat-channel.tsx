@@ -16,7 +16,6 @@ import {
   useChannelStateContext,
   useMessageContext,
 } from "stream-chat-react";
-import { forwardRef } from "react";
 
 interface ChatChannelProps {
   open: boolean;
@@ -47,12 +46,12 @@ function CustomChannelHeader({
 }: CustomChannelHeaderProps) {
   return (
     <div className="flex items-center gap-3">
-      <div className="h-full p-2 md:hidden">
+      <div className="h-full w-full p-2 md:hidden">
         <Button size="icon" variant="ghost" onClick={openSidebar}>
           <Menu className="size-5" />
         </Button>
       </div>
-      <ChannelHeader {...props} />
+      {/* <ChannelHeader {...props} /> */}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { Link } from "next-view-transitions";
 import { UserButton } from "./user-button";
 import { SearchField } from "./search-field";
-import { api } from "~/trpc/server";
 import { auth } from "~/server/auth";
 import { cn } from "~/lib/utils";
 
@@ -11,7 +10,7 @@ export async function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-10 h-[70px] bg-card shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:bg-slate-900",
+        "sticky top-0 z-10 h-[70px] bg-card shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:bg-slate-900 dark:shadow-lg dark:backdrop-blur-md sm:bg-background",
         {
           "flex items-center": !session,
         },

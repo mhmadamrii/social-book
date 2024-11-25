@@ -57,13 +57,13 @@ export function PostDetailCard({ post }: { post: PostDetaiByIdType }) {
 
   return (
     <>
-      <section className="group mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4">
+      <section className="group mt-1 flex flex-col gap-5 rounded-2xl bg-card px-4 py-4 dark:bg-slate-900">
         <PostHeader creator={post?.user} createdAt={post?.createdAt} />
         <PostContent imageUrl={post!.imageUrl} title={post!.content} />
         <Separator />
         <PostFooter post={post} session={session} />
       </section>
-      <section className="rounded-2xl bg-slate-900 px-4 py-4">
+      <section className="rounded-2xl bg-card px-4 py-4 dark:bg-slate-900">
         <h1 className="text-center text-3xl font-bold">Comments</h1>
       </section>
 

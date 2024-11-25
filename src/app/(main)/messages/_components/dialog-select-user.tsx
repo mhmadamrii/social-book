@@ -6,10 +6,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { DefaultStreamChatGenerics, useChatContext } from "stream-chat-react";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
-import { AnimateUpload } from "~/components/globals/animate-upload";
-import { Input } from "~/components/ui/input";
-import { ScrollArea } from "~/components/ui/scroll-area";
-import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { UserResponse } from "stream-chat";
@@ -101,6 +97,7 @@ export function DialogSelectUser({
     },
     onSuccess: (res) => {
       toast.success("Conversation started");
+      onOpenChange(false);
     },
     onError: (err) => {
       console.log("err", err);

@@ -7,7 +7,7 @@ import { api } from "~/trpc/server";
 export default function Bookmark() {
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="rounded-2xl bg-slate-900 p-4">
+      <div className="rounded-2xl bg-card p-4 dark:bg-slate-900">
         <h1 className="text-center text-3xl font-bold">Bookmark</h1>
       </div>
       <Suspense fallback={<PostSkeleton count={3} />}>

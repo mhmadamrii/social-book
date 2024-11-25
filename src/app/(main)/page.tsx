@@ -13,7 +13,7 @@ export default async function Home() {
       {session && <PostField currentUser={session?.current_user} />}
       <div className="w-full">
         <Tabs defaultValue="for-you">
-          <TabsList>
+          <TabsList className="bg-card dark:bg-slate-900">
             <TabsTrigger value="for-you">
               {session ? "For you" : "Posts"}
             </TabsTrigger>

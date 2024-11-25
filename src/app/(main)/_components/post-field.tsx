@@ -67,7 +67,7 @@ export function PostField({ currentUser }: { currentUser: CurrentUserType }) {
   return (
     <section
       className={cn(
-        "mt-1 flex flex-col gap-5 rounded-2xl bg-slate-900 px-4 py-4",
+        "mt-1 flex flex-col gap-5 rounded-2xl bg-card px-4 py-4 dark:bg-slate-900",
       )}
     >
       <div className="flex items-start gap-3">

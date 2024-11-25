@@ -8,7 +8,10 @@ export function CommentDetailCard({ post }: { post: PostDetaiByIdType }) {
     return <NoCommentFound message="This post has no comments yet." />;
   }
   return post?.comments?.map((item, idx: number) => (
-    <section key={idx} className="rounded-2xl bg-slate-900 px-2 py-4">
+    <section
+      key={idx}
+      className="rounded-2xl bg-card px-2 py-4 dark:bg-slate-900"
+    >
       <div className="mb-5 flex items-center gap-2">
         <Avatar>
           <AvatarImage src={item?.user?.image as string} />

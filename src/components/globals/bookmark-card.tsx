@@ -25,7 +25,7 @@ export function BookmarkCard({ item }: { item: any }) {
   });
 
   return (
-    <section className="cursor-pointer rounded-2xl bg-slate-900 px-4 py-4 hover:bg-slate-900/80">
+    <section className="cursor-pointer rounded-2xl bg-card px-4 py-4 dark:bg-slate-900">
       <div className="flex items-center justify-between">
         <div className="flex w-full items-center gap-2">
           <Avatar>

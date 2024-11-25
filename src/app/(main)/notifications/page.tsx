@@ -24,12 +24,12 @@ const getIcon = (type: NotificationType) => {
 export default function Notifications() {
   return (
     <div className="flex w-full flex-col gap-4">
-      <div className="rounded-2xl bg-slate-900 p-4">
+      <div className="rounded-2xl bg-card p-4 dark:bg-slate-900">
         <h1 className="text-center text-3xl font-bold">Notifications</h1>
       </div>
       <Suspense
         fallback={
-          <section className="w-full rounded-2xl bg-slate-900 p-4">
+          <section className="w-full rounded-2xl bg-card p-4 dark:bg-slate-900">
             <NotificationSkeleton count={7} />
           </section>
         }
@@ -48,7 +48,7 @@ async function NotificationsServerData() {
   }
 
   return (
-    <div className="flex w-full flex-col gap-4 rounded-2xl bg-slate-900 p-4">
+    <div className="flex w-full flex-col gap-4 rounded-2xl bg-card p-4 dark:bg-slate-900">
       {notifications.notifications.map((item) => (
         <div
           key={item.id}

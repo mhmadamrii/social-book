@@ -29,9 +29,9 @@ function AuthenticatedLeftBar() {
     unreadCount: 2,
   };
   return (
-    <aside className="sticky top-[6rem] hidden h-fit flex-none space-y-3 rounded-2xl bg-card bg-slate-900 px-3 py-5 shadow-sm sm:block lg:px-5 xl:w-80">
+    <aside className="sticky top-[6rem] hidden h-fit flex-none space-y-3 rounded-2xl bg-card px-3 py-5 shadow-sm dark:bg-slate-900 sm:block lg:px-5 xl:w-80">
       <Link
-        className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-800"
+        className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-200 dark:hover:bg-slate-800"
         href="/"
       >
         <Home />
@@ -39,7 +39,7 @@ function AuthenticatedLeftBar() {
       </Link>
 
       <Link
-        className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-800"
+        className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-200 dark:hover:bg-slate-800"
         href="/notifications"
       >
         <div className="relative">
@@ -54,7 +54,7 @@ function AuthenticatedLeftBar() {
       </Link>
 
       <Link
-        className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-800"
+        className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-200 dark:hover:bg-slate-800"
         href="/messages"
       >
         <div className="relative">
@@ -69,7 +69,7 @@ function AuthenticatedLeftBar() {
       </Link>
       <Link
         prefetch
-        className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-800"
+        className="flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-slate-200 dark:hover:bg-slate-800"
         href="/bookmarks"
       >
         <Bookmark />

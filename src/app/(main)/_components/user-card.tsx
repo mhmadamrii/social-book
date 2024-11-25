@@ -101,7 +101,7 @@ export function UserCard({
           </Button>
         </div>
       </div>
-      <Separator className="w-full" />
+      {/* <Separator className="w-full" /> */}
     </>
   );
 }
