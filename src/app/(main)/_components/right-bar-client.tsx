@@ -5,7 +5,6 @@ import { cn } from "~/lib/utils";
 
 export function RightBarClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  console.log("pathname", pathname);
   return (
     <aside
       className={cn(

@@ -4,6 +4,7 @@
 import bcryptjs from "bcryptjs";
 
 import { Input } from "~/components/ui/input";
+import { TRPCClientError } from "@trpc/client";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,7 +48,10 @@ export function FormRegister() {
       toast.success("Registered");
     },
     onError: (err: any) => {
-      setErrorMessage(err.message);
+      console.log(err instanceof TRPCClientError);
+      if (err instanceof TRPCClientError) {
+        setErrorMessage(err.shape?.message);
+      }
     },
   });
 

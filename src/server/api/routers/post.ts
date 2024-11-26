@@ -396,6 +396,52 @@ export const postRouter = createTRPCRouter({
         },
       });
     }),
+
+  getSearchPosts: publicProcedure
+    .input(z.object({ term: z.string() }))
+    .query(async ({ ctx }) => {
+      return ctx.db.post.findMany({
+        where: {
+          OR: [
+            {
+              content: {
+                contains: "socialbook",
+              },
+            },
+            {
+              content: {
+                contains: "socialbook",
+              },
+            },
+          ],
+        },
+        include: {
+          user: true,
+          likes: {
+            select: {
+              userId: true,
+            },
+          },
+          bookmarks: {
+            select: {
+              id: true,
+              userId: true,
+            },
+          },
+          comments: {
+            select: {
+              userId: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+        },
+      });
+    }),
 });
 
 export type PostRouterType = typeof postRouter;

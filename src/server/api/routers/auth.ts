@@ -141,11 +141,18 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const isExistUser = await ctx.db.user.findFirst({
         where: {
-          username: input.username,
+          OR: [
+            {
+              username: input.username,
+            },
+            {
+              email: input.email,
+            },
+          ],
         },
       });
 
-      if (isExistUser) {
+      if (isExistUser?.id) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Email or username already exists",

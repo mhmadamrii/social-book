@@ -26,7 +26,7 @@ function AuthenticatedLeftBar() {
   );
 
   const data = {
-    unreadCount: 2,
+    unreadCount: 0,
   };
   return (
     <aside className="sticky top-[6rem] hidden h-fit flex-none space-y-3 rounded-2xl bg-card px-3 py-5 shadow-sm dark:bg-slate-900 sm:block lg:px-5 xl:w-80">

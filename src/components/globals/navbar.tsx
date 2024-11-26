@@ -28,7 +28,7 @@ export async function Navbar() {
           <Link href="/" className="text-md font-bold text-primary sm:text-2xl">
             Social-Book
           </Link>
-          <SearchField />
+          {/* <SearchField /> */}
         </div>
 
         <div
