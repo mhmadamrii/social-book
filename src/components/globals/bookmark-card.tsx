@@ -29,7 +29,7 @@ export function BookmarkCard({ item }: { item: any }) {
       <div className="flex items-center justify-between">
         <div className="flex w-full items-center gap-2">
           <Avatar>
-            <AvatarImage src={item.user?.image as string} />
+            <AvatarImage src={item?.post?.user?.image as string} />
             <AvatarFallback>
               {getInitial(item.user?.name as string)}
             </AvatarFallback>
@@ -37,8 +37,8 @@ export function BookmarkCard({ item }: { item: any }) {
 
           <div>
             <p className="text-sm font-bold">
-              {item.user.name}
-              {" · "} @{item.user.username}
+              {item?.post?.user.name}
+              {" · "} @{item?.post?.user.username}
             </p>
             <p className="text-[12px] text-muted-foreground">4 hours ago</p>
           </div>

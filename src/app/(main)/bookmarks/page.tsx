@@ -19,6 +19,7 @@ export default function Bookmark() {
 
 async function BookmarkServerData() {
   const bookmarks = await api.bookmark.getAllUserBookmark();
+  console.log("bookmarks", bookmarks);
 
   if (bookmarks.length === 0) {
     return <NoBookmarkFound />;
