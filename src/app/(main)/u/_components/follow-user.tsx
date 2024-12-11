@@ -26,13 +26,13 @@ export function FollowUser({
   );
 
   const { mutate: follow } = api.following.followUser.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       router.refresh();
     },
   });
 
   const { mutate: unfollow } = api.following.unfollowUser.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       router.refresh();
     },
   });

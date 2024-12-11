@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { Link } from "next-view-transitions";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Bookmark, ExternalLink, Heart, MessageCircle } from "lucide-react";
 import { Comments } from "~/components/globals/comments";
@@ -70,7 +71,9 @@ export function FollowingFeed({ userId }: { userId: string }) {
 
 function PostSection({ item, userId }: { item: any; userId: string }) {
   const utils = api.useUtils();
+  const router = useRouter();
   const commentRef = useRef<HTMLInputElement>(null);
+
   const [isBookmarked, setIsBookmarked] = useState(
     item?.bookmarks?.some((b: any) => b.userId === userId ?? false) ?? false,
   );
@@ -88,7 +91,10 @@ function PostSection({ item, userId }: { item: any; userId: string }) {
   });
 
   const { mutate: increaseLikes } = api.post.increaseLikes.useMutation({
-    onSuccess: () => utils.following.invalidate(),
+    onSuccess: () => {
+      utils.post.invalidate();
+      router.refresh();
+    },
   });
 
   const { mutate: createBookmark } = api.bookmark.createBookmark.useMutation({
