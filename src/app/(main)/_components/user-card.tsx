@@ -2,7 +2,7 @@
 
 import { Link } from "next-view-transitions";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { VerifiedIcon } from "~/components/globals/verified-icon";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -43,6 +43,14 @@ export function UserCard({
         router.refresh();
       },
     });
+
+  useEffect(() => {
+    if (isAlreadyFollowing) {
+      setIsFollowed(true);
+    } else {
+      setIsFollowed(false);
+    }
+  }, [isAlreadyFollowing]);
 
   return (
     <>

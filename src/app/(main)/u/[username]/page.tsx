@@ -11,18 +11,21 @@ import { UserDetailPosts } from "../_components/user-detail-posts";
 import { FollowUser } from "../_components/follow-user";
 import { auth } from "~/server/auth";
 
-export default function User({ params }: { params: { username: string } }) {
+export default async function User({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}) {
+  const username = (await params).username;
   return (
     <section className="flex w-full flex-col gap-4">
       <Suspense fallback={<AnimateLoad />}>
-        <UserWithServerData username={params?.username} />
+        <UserWithServerData username={username} />
       </Suspense>
       <div className="rounded-2xl bg-card p-4 dark:bg-slate-900">
-        <h1 className="text-center text-3xl font-bold">
-          {params?.username}'s posts
-        </h1>
+        <h1 className="text-center text-3xl font-bold">{username}'s posts</h1>
       </div>
-      <UserDetailPosts username={params?.username} />
+      <UserDetailPosts username={username} />
     </section>
   );
 }

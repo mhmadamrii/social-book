@@ -9,7 +9,6 @@ import { auth } from "~/server/auth";
 import { PeopleYouMayKnow } from "~/components/globals/people-you-may-know";
 import { removeHashtag } from "~/lib/utils";
 import { CurrentUserType } from "~/server/tRPCtypes";
-import { headers } from "next/headers";
 import { RightBarClient } from "./right-bar-client";
 
 interface _TrendingTopics {
